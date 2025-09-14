@@ -92,6 +92,19 @@
       ]
     },
     {
+      "name": "Nouvelle Fiche Plan 2D",
+      "short_name": "Plan 2D",
+      "description": "Créer une fiche avec Plan 2D MagicPlan",
+      "url": "/?shortcut=new-fiche",
+      "icons": [
+        {
+          "src": "assets/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
       "name": "Calcul PAC",
       "short_name": "PAC",
       "description": "Dimensionner une PAC rapidement",
