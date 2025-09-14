@@ -343,10 +343,49 @@
     <script src="js/modules/settings.js"></script>
     <script src="js/modules/pdf-export.js"></script>
     
-    <!-- Service Worker -->
+    <!-- Advanced PWA Scripts -->
+    <script src="js/offline.js"></script>
+    <script src="js/update-manager.js"></script>
+    
+    <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            navigator.serviceWorker.register('sw-advanced.js')
+                .then(registration => {
+                    console.log('Advanced SW registered:', registration);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        console.log('SW update found');
+                    });
+                })
+                .catch(error => {
+                    console.error('SW registration failed:', error);
+                    // Fallback to basic SW
+                    navigator.serviceWorker.register('sw.js');
+                });
+        }
+        
+        // Handle app shortcuts
+        const urlParams = new URLSearchParams(window.location.search);
+        const shortcut = urlParams.get('shortcut');
+        if (shortcut && window.app) {
+            setTimeout(() => {
+                switch(shortcut) {
+                    case 'new-client':
+                        window.app.showModule('clients');
+                        setTimeout(() => window.clients?.showAddModal(), 500);
+                        break;
+                    case 'new-chantier':
+                        window.app.showModule('chantiers');
+                        setTimeout(() => window.chantiers?.showAddModal(), 500);
+                        break;
+                    case 'new-pac':
+                        window.app.showModule('calculs-pac');
+                        setTimeout(() => window.calculsPac?.showAddModal(), 500);
+                        break;
+                }
+            }, 2000);
         }
     </script>
 </body>
