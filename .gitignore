@@ -1,83 +1,112 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Environnement
+.env
+.env.local
+.env.production
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
 
-# IDE and editors
-.idea/
-.vscode/
-
-# Dependencies
+# Node modules
 node_modules/
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# Testing
-/coverage
-
-# Next.js
-/.next/
-/out/
-next-env.d.ts
-*.tsbuildinfo
-
-# Production builds
-/build
-dist/
-dist
-
-# Environment files (comprehensive coverage)
-
-*token.json*
-*credentials.json*
-
-# Logs and debug files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
-dump.rdb
 
-# System files
+# Base de données locale
+*.db
+*.sqlite
+*.sqlite3
+data/
+dumps/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# IDE et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporaires
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Build et distribution
+build/
+dist/
+.next/
+out/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Certificats SSL
 *.pem
+*.key
+*.crt
 
-# Python
-__pycache__/
-*pyc*
-venv/
-.venv/
+# Uploads
+uploads/
+media/
 
-# Development tools
-chainlit.md
-.chainlit
-.ipynb_checkpoints/
-.ac
-
-# Deployment
-.vercel
-
-# Data and databases
-agenthub/agents/youtube/db
-
-# Archive files and large assets
-**/*.zip
-**/*.tar.gz
-**/*.tar
-**/*.tgz
-*.pack
-*.deb
-*.dylib
-
-# Build caches
+# Cache
 .cache/
+.parcel-cache/
 
-# Mobile development
-android-sdk/ -e 
-# Environment files
-*.env
-*.env.*
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Archives
+*.tar.gz
+*.zip
+*.rar
+
+# Spécifique au projet
+deployment/secrets/
+config/production/
