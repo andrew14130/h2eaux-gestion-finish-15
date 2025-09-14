@@ -684,14 +684,62 @@ async def delete_user(user_id: str, current_user: User = Depends(get_current_use
         )
     return {"message": "User deleted successfully"}
 
-# Fiche SDB Models
-class FicheSDB(BaseModel):
+# Fiche Chantier Complete Models (Étendu avec 8 onglets + Plan 2D)
+class FicheChantierComplete(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     nom: str
-    client_nom: str
+    client_nom: str = ""
     adresse: str = ""
-    type_sdb: str = "complete"  # complete, douche, wc, mixte
+    telephone: str = ""
+    email: str = ""
+    
+    # Onglet Général
+    date_rdv: str = ""
+    type_intervention: str = "visite_technique"
+    statut: str = "planifie"
+    
+    # Onglet Client  
+    nb_personnes: int = 2
+    budget_estime: str = ""
+    
+    # Onglet Logement
+    type_logement: str = "maison"
+    annee_construction: Optional[int] = None
     surface: str = ""
+    isolation: str = "moyenne"
+    menuiseries: str = "double"
+    
+    # Onglet Existant
+    chauffage_actuel: str = ""
+    etat_general: str = "bon" 
+    production_ecs: str = "chaudiere"
+    observations_existant: str = ""
+    
+    # Onglet Besoins
+    besoins: str = ""  # JSON array
+    priorite: str = "moyenne"
+    delai_souhaite: str = "moyen"
+    contraintes: str = ""
+    
+    # Onglet Technique
+    compteur_electrique: str = ""
+    arrivee_gaz: str = "non"
+    evacuation_eaux: str = ""
+    acces_materiel: str = "facile"
+    contraintes_techniques: str = ""
+    
+    # Onglet Plan 2D (CRITIQUE)
+    plan_data: str = ""  # JSON plan 2D
+    
+    # Onglet Notes
+    solution_recommandee: str = ""
+    budget_final: str = ""
+    delai_realisation: str = ""
+    points_attention: str = ""
+    notes: str = ""
+    
+    # Legacy SDB fields (compatibilité)
+    type_sdb: str = "complete"
     carrelage_mur: str = ""
     carrelage_sol: str = ""
     sanitaires: str = ""
@@ -699,17 +747,47 @@ class FicheSDB(BaseModel):
     chauffage: str = ""
     ventilation: str = ""
     eclairage: str = ""
-    budget_estime: str = ""
-    notes: str = ""
+    
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-class FicheSDBCreate(BaseModel):
+class FicheChantierCreate(BaseModel):
     nom: str
-    client_nom: str
+    client_nom: str = ""
     adresse: str = ""
-    type_sdb: str = "complete"
+    telephone: str = ""
+    email: str = ""
+    date_rdv: str = ""
+    type_intervention: str = "visite_technique"
+    statut: str = "planifie"
+    nb_personnes: int = 2
+    budget_estime: str = ""
+    type_logement: str = "maison"
+    annee_construction: Optional[int] = None
     surface: str = ""
+    isolation: str = "moyenne"
+    menuiseries: str = "double"
+    chauffage_actuel: str = ""
+    etat_general: str = "bon"
+    production_ecs: str = "chaudiere"
+    observations_existant: str = ""
+    besoins: str = ""
+    priorite: str = "moyenne"
+    delai_souhaite: str = "moyen"
+    contraintes: str = ""
+    compteur_electrique: str = ""
+    arrivee_gaz: str = "non"
+    evacuation_eaux: str = ""
+    acces_materiel: str = "facile"
+    contraintes_techniques: str = ""
+    plan_data: str = ""
+    solution_recommandee: str = ""
+    budget_final: str = ""
+    delai_realisation: str = ""
+    points_attention: str = ""
+    notes: str = ""
+    # Legacy SDB compatibility
+    type_sdb: str = "complete"
     carrelage_mur: str = ""
     carrelage_sol: str = ""
     sanitaires: str = ""
@@ -717,15 +795,43 @@ class FicheSDBCreate(BaseModel):
     chauffage: str = ""
     ventilation: str = ""
     eclairage: str = ""
-    budget_estime: str = ""
-    notes: str = ""
 
-class FicheSDBUpdate(BaseModel):
+class FicheChantierUpdate(BaseModel):
     nom: Optional[str] = None
     client_nom: Optional[str] = None
     adresse: Optional[str] = None
-    type_sdb: Optional[str] = None
+    telephone: Optional[str] = None
+    email: Optional[str] = None
+    date_rdv: Optional[str] = None
+    type_intervention: Optional[str] = None
+    statut: Optional[str] = None
+    nb_personnes: Optional[int] = None
+    budget_estime: Optional[str] = None
+    type_logement: Optional[str] = None
+    annee_construction: Optional[int] = None
     surface: Optional[str] = None
+    isolation: Optional[str] = None
+    menuiseries: Optional[str] = None
+    chauffage_actuel: Optional[str] = None
+    etat_general: Optional[str] = None
+    production_ecs: Optional[str] = None
+    observations_existant: Optional[str] = None
+    besoins: Optional[str] = None
+    priorite: Optional[str] = None
+    delai_souhaite: Optional[str] = None
+    contraintes: Optional[str] = None
+    compteur_electrique: Optional[str] = None
+    arrivee_gaz: Optional[str] = None
+    evacuation_eaux: Optional[str] = None
+    acces_materiel: Optional[str] = None
+    contraintes_techniques: Optional[str] = None
+    plan_data: Optional[str] = None
+    solution_recommandee: Optional[str] = None
+    budget_final: Optional[str] = None
+    delai_realisation: Optional[str] = None
+    points_attention: Optional[str] = None
+    notes: Optional[str] = None
+    type_sdb: Optional[str] = None
     carrelage_mur: Optional[str] = None
     carrelage_sol: Optional[str] = None
     sanitaires: Optional[str] = None
@@ -733,8 +839,6 @@ class FicheSDBUpdate(BaseModel):
     chauffage: Optional[str] = None
     ventilation: Optional[str] = None
     eclairage: Optional[str] = None
-    budget_estime: Optional[str] = None
-    notes: Optional[str] = None
 
 # Calcul PAC Models - Version Professionnelle Complète
 class Piece(BaseModel):
