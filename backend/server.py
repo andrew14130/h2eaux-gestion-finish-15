@@ -979,7 +979,16 @@ async def update_fiche_sdb(fiche_id: str, fiche_data: FicheChantierUpdate, curre
     if not fiche:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Fiche not found")
     
-    update_data = {k: v for k, v in fiche_data.dict().items() if v is not None}
+    # Traitement spécial pour plan_data JSON
+    update_data = {}
+    for k, v in fiche_data.dict().items():
+        if v is not None:
+            if k == "plan_data" and isinstance(v, str):
+                # S'assurer que plan_data est traité comme string JSON
+                update_data[k] = v
+            else:
+                update_data[k] = v
+    
     update_data["updated_at"] = datetime.utcnow()
     
     await db.fiches_sdb.update_one({"id": fiche_id}, {"$set": update_data})
