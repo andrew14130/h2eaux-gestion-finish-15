@@ -125,7 +125,7 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Interface principale sur desktop"
+      "label": "Interface de gestion H2EAUX avec Plan 2D"
     },
     {
       "src": "assets/screenshot-tablet.png",
