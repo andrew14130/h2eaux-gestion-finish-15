@@ -736,94 +736,118 @@ class FicheSDBUpdate(BaseModel):
     budget_estime: Optional[str] = None
     notes: Optional[str] = None
 
-# Calcul PAC Models - Version étendue
+# Calcul PAC Models - Version Professionnelle Complète
 class Piece(BaseModel):
     id: str
-    nom: str
-    type: str = "salon"
-    surface: str = ""
-    hauteur_plafond: str = "2.5"
-    orientation: str = "sud"
-    nombre_facades_exterieures: str = "1"
-    isolation_murs: str = "moyenne"
-    type_vitrage: str = "double"
-    surface_vitree: str = ""
-    puissance_necessaire: str = ""
-    type_unite_interieure: str = "murale"  # Pour Air/Air
-    temperature_depart: str = "35"  # Pour Air/Eau
+    nom: str = ""
+    type: str = "salon"  # salon, cuisine, chambre, salle_bain, bureau, autre
+    longueur: str = ""
+    largeur: str = ""
+    hauteur: str = "2.5"
+    surface: str = ""  # Auto-calculé : Longueur × Largeur
+    volume: str = ""   # Auto-calculé : Longueur × Largeur × Hauteur
+    temperature_souhaitee: str = "20"
+    delta_t: str = ""  # Auto-calculé : Temp_intérieure - Temp_extérieure
+    coefficient_g: str = ""  # Selon isolation et zone climatique
+    ratio_norme_energetique: str = "1.0"  # Selon type émetteur
+    puissance_calculee: str = ""  # (Surface × Coeff G × ΔT × Ratio) / 1000
+    type_unite_interieure: str = "murale"  # Pour Air/Air : murale, cassette, gainable, console
+    radiateurs_existants: str = ""  # Pour Air/Eau : description radiateurs
+    commentaires: str = ""
 
 class CalculPACExtended(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     nom: str
-    client_nom: str
+    client_nom: str = ""
     adresse: str = ""
-    type_pac: str = "air_eau"  # air_eau, air_air, geothermie
+    batiment: str = "maison_individuelle"  # maison_individuelle, appartement, bureau, commerce
+    type_pac: str = "air_eau"  # air_eau, air_air
     
-    # Commun
+    # Caractéristiques environnementales
     surface_totale: str = ""
-    isolation: str = "moyenne"
-    zone_climatique: str = "H2"
-    budget_estime: str = ""
-    pieces: List[Piece] = Field(default_factory=list)
-    notes: str = ""
+    altitude: str = "200"
+    zone_climatique: str = "H2"  # H1, H2, H3
+    isolation: str = "moyenne"  # rt2012, bonne, moyenne, ancienne, faible
+    annee_construction: str = ""
+    dpe: str = ""  # A, B, C, D, E, F, G
+    
+    # Paramètres thermiques
+    temperature_exterieure_base: str = "-7"
+    temperature_interieure_souhaitee: str = "20"
     
     # Spécifique Air/Eau
-    temperature_exterieure_base: str = ""
-    temperature_interieure_souhaitee: str = ""
-    altitude: str = ""
-    type_emetteur: str = ""
+    type_emetteur: str = ""  # plancher_chauffant, radiateurs_bt, radiateurs_ht, ventilo_convecteurs
     production_ecs: bool = False
-    volume_ballon_ecs: str = ""
-    puissance_calculee: str = ""
-    cop_estime: str = ""
+    volume_ballon_ecs: str = ""  # 200, 250, 300, 500
+    cop_estime: str = "3.0"
     
-    # Spécifique Air/Air
-    type_installation: str = ""
-    puissance_totale_calculee: str = ""
-    scop_estime: str = ""
-    seer_estime: str = ""
+    # Spécifique Air/Air  
+    type_installation: str = ""  # mono_split, multi_split, gainable
+    scop_estime: str = "4.0"
+    seer_estime: str = "5.0"
     
-    # Legacy fields
-    surface_a_chauffer: str = ""
-    consommation_estimee: str = ""
+    # Gestion pièce par pièce
+    pieces: List[Piece] = Field(default_factory=list)
     
+    # Résultats de calculs
+    puissance_calculee: str = ""  # Puissance chauffage seul
+    puissance_totale_calculee: str = ""  # Puissance totale (chauffage + ECS)
+    
+    # Autres
+    notes: str = ""
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 class CalculPACCreate(BaseModel):
     nom: str
-    client_nom: str
+    client_nom: str = ""
     adresse: str = ""
+    batiment: str = "maison_individuelle"
     type_pac: str = "air_eau"
     surface_totale: str = ""
-    isolation: str = "moyenne"
+    altitude: str = "200"
     zone_climatique: str = "H2"
-    budget_estime: str = ""
-    pieces: List[Piece] = Field(default_factory=list)
-    notes: str = ""
-    temperature_exterieure_base: str = ""
-    temperature_interieure_souhaitee: str = ""
-    altitude: str = ""
+    isolation: str = "moyenne"
+    annee_construction: str = ""
+    dpe: str = ""
+    temperature_exterieure_base: str = "-7"
+    temperature_interieure_souhaitee: str = "20"
     type_emetteur: str = ""
     production_ecs: bool = False
     volume_ballon_ecs: str = ""
-    puissance_calculee: str = ""
-    cop_estime: str = ""
+    cop_estime: str = "3.0"
     type_installation: str = ""
+    scop_estime: str = "4.0"
+    seer_estime: str = "5.0"
+    pieces: List[Piece] = Field(default_factory=list)
+    puissance_calculee: str = ""
     puissance_totale_calculee: str = ""
-    scop_estime: str = ""
-    seer_estime: str = ""
+    notes: str = ""
 
 class CalculPACUpdate(BaseModel):
     nom: Optional[str] = None
     client_nom: Optional[str] = None
     adresse: Optional[str] = None
+    batiment: Optional[str] = None
     type_pac: Optional[str] = None
     surface_totale: Optional[str] = None
-    isolation: Optional[str] = None
+    altitude: Optional[str] = None
     zone_climatique: Optional[str] = None
-    budget_estime: Optional[str] = None
+    isolation: Optional[str] = None
+    annee_construction: Optional[str] = None
+    dpe: Optional[str] = None
+    temperature_exterieure_base: Optional[str] = None
+    temperature_interieure_souhaitee: Optional[str] = None
+    type_emetteur: Optional[str] = None
+    production_ecs: Optional[bool] = None
+    volume_ballon_ecs: Optional[str] = None
+    cop_estime: Optional[str] = None
+    type_installation: Optional[str] = None
+    scop_estime: Optional[str] = None
+    seer_estime: Optional[str] = None
     pieces: Optional[List[Piece]] = None
+    puissance_calculee: Optional[str] = None
+    puissance_totale_calculee: Optional[str] = None
     notes: Optional[str] = None
 
 # Fiche SDB routes
