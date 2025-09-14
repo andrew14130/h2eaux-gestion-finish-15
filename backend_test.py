@@ -298,8 +298,408 @@ def test_client_management(token):
     
     return results
 
+def test_chantier_management(token):
+    """Test 4: Chantier CRUD operations"""
+    print(f"\n🔍 Testing Chantier Management")
+    
+    results = []
+    auth_headers = {**HEADERS, "Authorization": f"Bearer {token}"}
+    created_chantier_id = None
+    
+    # Test GET /api/chantiers
+    try:
+        response = requests.get(f"{BASE_URL}/chantiers", headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            chantiers = response.json()
+            results.append((True, f"GET chantiers successful - Found {len(chantiers)} chantiers"))
+        else:
+            results.append((False, f"GET chantiers failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"GET chantiers connection error: {str(e)}"))
+    
+    # Test POST /api/chantiers
+    try:
+        response = requests.post(f"{BASE_URL}/chantiers", json=TEST_CHANTIER_DATA, headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            chantier = response.json()
+            created_chantier_id = chantier.get("id")
+            if created_chantier_id and chantier.get("nom") == TEST_CHANTIER_DATA["nom"]:
+                results.append((True, f"POST chantier successful - Created {chantier['nom']}"))
+            else:
+                results.append((False, f"POST chantier missing data: {chantier}"))
+        else:
+            results.append((False, f"POST chantier failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"POST chantier connection error: {str(e)}"))
+    
+    # Test GET /api/chantiers/{id}
+    if created_chantier_id:
+        try:
+            response = requests.get(f"{BASE_URL}/chantiers/{created_chantier_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                chantier = response.json()
+                results.append((True, f"GET chantier by ID successful - Retrieved {chantier['nom']}"))
+            else:
+                results.append((False, f"GET chantier by ID failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"GET chantier by ID connection error: {str(e)}"))
+    
+    # Test PUT /api/chantiers/{id}
+    if created_chantier_id:
+        update_data = {"statut": "en_cours", "notes": "Chantier modifié lors des tests"}
+        try:
+            response = requests.put(f"{BASE_URL}/chantiers/{created_chantier_id}", json=update_data, headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                chantier = response.json()
+                if chantier.get("statut") == "en_cours":
+                    results.append((True, f"PUT chantier successful - Updated status"))
+                else:
+                    results.append((False, f"PUT chantier data not updated: {chantier}"))
+            else:
+                results.append((False, f"PUT chantier failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"PUT chantier connection error: {str(e)}"))
+    
+    # Test DELETE /api/chantiers/{id}
+    if created_chantier_id:
+        try:
+            response = requests.delete(f"{BASE_URL}/chantiers/{created_chantier_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                results.append((True, f"DELETE chantier successful - {data['message']}"))
+            else:
+                results.append((False, f"DELETE chantier failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"DELETE chantier connection error: {str(e)}"))
+    
+    return results
+
+def test_document_management(token):
+    """Test 5: Document CRUD operations"""
+    print(f"\n🔍 Testing Document Management")
+    
+    results = []
+    auth_headers = {**HEADERS, "Authorization": f"Bearer {token}"}
+    created_document_id = None
+    
+    # Test GET /api/documents
+    try:
+        response = requests.get(f"{BASE_URL}/documents", headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            documents = response.json()
+            results.append((True, f"GET documents successful - Found {len(documents)} documents"))
+        else:
+            results.append((False, f"GET documents failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"GET documents connection error: {str(e)}"))
+    
+    # Test POST /api/documents
+    try:
+        response = requests.post(f"{BASE_URL}/documents", json=TEST_DOCUMENT_DATA, headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            document = response.json()
+            created_document_id = document.get("id")
+            if created_document_id and document.get("nom") == TEST_DOCUMENT_DATA["nom"]:
+                results.append((True, f"POST document successful - Created {document['nom']}"))
+            else:
+                results.append((False, f"POST document missing data: {document}"))
+        else:
+            results.append((False, f"POST document failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"POST document connection error: {str(e)}"))
+    
+    # Test GET /api/documents/{id}
+    if created_document_id:
+        try:
+            response = requests.get(f"{BASE_URL}/documents/{created_document_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                document = response.json()
+                results.append((True, f"GET document by ID successful - Retrieved {document['nom']}"))
+            else:
+                results.append((False, f"GET document by ID failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"GET document by ID connection error: {str(e)}"))
+    
+    # Test DELETE /api/documents/{id}
+    if created_document_id:
+        try:
+            response = requests.delete(f"{BASE_URL}/documents/{created_document_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                results.append((True, f"DELETE document successful - {data['message']}"))
+            else:
+                results.append((False, f"DELETE document failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"DELETE document connection error: {str(e)}"))
+    
+    return results
+
+def test_calcul_pac_management(token):
+    """Test 6: Calcul PAC CRUD operations"""
+    print(f"\n🔍 Testing Calcul PAC Management")
+    
+    results = []
+    auth_headers = {**HEADERS, "Authorization": f"Bearer {token}"}
+    created_calcul_id = None
+    
+    # Test GET /api/calculs-pac
+    try:
+        response = requests.get(f"{BASE_URL}/calculs-pac", headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            calculs = response.json()
+            results.append((True, f"GET calculs-pac successful - Found {len(calculs)} calculs"))
+        else:
+            results.append((False, f"GET calculs-pac failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"GET calculs-pac connection error: {str(e)}"))
+    
+    # Test POST /api/calculs-pac
+    try:
+        response = requests.post(f"{BASE_URL}/calculs-pac", json=TEST_CALCUL_PAC_DATA, headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            calcul = response.json()
+            created_calcul_id = calcul.get("id")
+            if created_calcul_id and calcul.get("nom") == TEST_CALCUL_PAC_DATA["nom"]:
+                results.append((True, f"POST calcul-pac successful - Created {calcul['nom']}"))
+            else:
+                results.append((False, f"POST calcul-pac missing data: {calcul}"))
+        else:
+            results.append((False, f"POST calcul-pac failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"POST calcul-pac connection error: {str(e)}"))
+    
+    # Test GET /api/calculs-pac/{id}
+    if created_calcul_id:
+        try:
+            response = requests.get(f"{BASE_URL}/calculs-pac/{created_calcul_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                calcul = response.json()
+                results.append((True, f"GET calcul-pac by ID successful - Retrieved {calcul['nom']}"))
+            else:
+                results.append((False, f"GET calcul-pac by ID failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"GET calcul-pac by ID connection error: {str(e)}"))
+    
+    # Test DELETE /api/calculs-pac/{id}
+    if created_calcul_id:
+        try:
+            response = requests.delete(f"{BASE_URL}/calculs-pac/{created_calcul_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                results.append((True, f"DELETE calcul-pac successful - {data['message']}"))
+            else:
+                results.append((False, f"DELETE calcul-pac failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"DELETE calcul-pac connection error: {str(e)}"))
+    
+    return results
+
+def test_fiches_chantier_management(token):
+    """Test 7: Fiches Chantier CRUD operations (PRIORITY - Plan 2D)"""
+    print(f"\n🔍 Testing Fiches Chantier Management (PRIORITY - Plan 2D)")
+    
+    results = []
+    auth_headers = {**HEADERS, "Authorization": f"Bearer {token}"}
+    created_fiche_id = None
+    
+    # Test data for Fiche Chantier with Plan 2D
+    test_fiche_data = {
+        "nom": "Fiche Test Plan 2D",
+        "client_nom": "Client Test Plan",
+        "adresse": "123 Rue du Test",
+        "telephone": "06 12 34 56 78",
+        "email": "test@example.fr",
+        "date_rdv": "2025-02-15",
+        "type_intervention": "visite_technique",
+        "statut": "planifie",
+        "nb_personnes": 4,
+        "budget_estime": "25000",
+        "type_logement": "maison",
+        "annee_construction": 2010,
+        "surface": "150",
+        "isolation": "bonne",
+        "menuiseries": "double",
+        "chauffage_actuel": "chaudiere_gaz",
+        "etat_general": "bon",
+        "production_ecs": "chaudiere",
+        "observations_existant": "Installation existante en bon état",
+        "besoins": '["chauffage", "climatisation", "ecs"]',
+        "priorite": "haute",
+        "delai_souhaite": "court",
+        "contraintes": "Accès difficile pour gros matériel",
+        "compteur_electrique": "triphasé",
+        "arrivee_gaz": "oui",
+        "evacuation_eaux": "tout_a_l_egout",
+        "acces_materiel": "difficile",
+        "contraintes_techniques": "Passage de gaines complexe",
+        "plan_data": '{"version": "1.0", "scale": "1:100", "rooms": [{"id": "room1", "name": "Salon", "type": "rectangle", "x": 10, "y": 10, "width": 50, "height": 40, "tools": ["selection", "drawing", "rooms", "measurement", "eraser"]}], "measurements": [{"from": {"x": 10, "y": 10}, "to": {"x": 60, "y": 10}, "value": "5.0m"}]}',
+        "solution_recommandee": "PAC Air/Eau 14kW avec plancher chauffant",
+        "budget_final": "28000",
+        "delai_realisation": "3 semaines",
+        "points_attention": "Vérifier l'isolation avant installation",
+        "notes": "Client très intéressé par la solution PAC"
+    }
+    
+    # Test GET /api/fiches-sdb
+    try:
+        response = requests.get(f"{BASE_URL}/fiches-sdb", headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            fiches = response.json()
+            results.append((True, f"GET fiches-sdb successful - Found {len(fiches)} fiches"))
+        else:
+            results.append((False, f"GET fiches-sdb failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"GET fiches-sdb connection error: {str(e)}"))
+    
+    # Test POST /api/fiches-sdb (Create with Plan 2D data)
+    try:
+        response = requests.post(f"{BASE_URL}/fiches-sdb", json=test_fiche_data, headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            fiche = response.json()
+            created_fiche_id = fiche.get("id")
+            if created_fiche_id and fiche.get("nom") == test_fiche_data["nom"]:
+                # Check if Plan 2D data is preserved
+                if fiche.get("plan_data") and "rooms" in fiche.get("plan_data", ""):
+                    results.append((True, f"POST fiche-sdb successful with Plan 2D - Created {fiche['nom']}"))
+                else:
+                    results.append((False, f"POST fiche-sdb missing Plan 2D data: {fiche.get('plan_data', 'None')}"))
+            else:
+                results.append((False, f"POST fiche-sdb missing data: {fiche}"))
+        else:
+            results.append((False, f"POST fiche-sdb failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"POST fiche-sdb connection error: {str(e)}"))
+    
+    # Test GET /api/fiches-sdb/{id}
+    if created_fiche_id:
+        try:
+            response = requests.get(f"{BASE_URL}/fiches-sdb/{created_fiche_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                fiche = response.json()
+                # Verify all 8 tabs data is present
+                tabs_data = {
+                    "general": fiche.get("date_rdv") and fiche.get("type_intervention"),
+                    "client": fiche.get("client_nom") and fiche.get("nb_personnes"),
+                    "logement": fiche.get("type_logement") and fiche.get("surface"),
+                    "existant": fiche.get("chauffage_actuel") and fiche.get("etat_general"),
+                    "besoins": fiche.get("besoins") and fiche.get("priorite"),
+                    "technique": fiche.get("compteur_electrique") and fiche.get("arrivee_gaz"),
+                    "plan_2d": fiche.get("plan_data") and "rooms" in fiche.get("plan_data", ""),
+                    "notes": fiche.get("solution_recommandee") and fiche.get("notes")
+                }
+                
+                missing_tabs = [tab for tab, present in tabs_data.items() if not present]
+                if not missing_tabs:
+                    results.append((True, f"GET fiche-sdb by ID successful - All 8 tabs data present"))
+                else:
+                    results.append((False, f"GET fiche-sdb missing tabs data: {missing_tabs}"))
+            else:
+                results.append((False, f"GET fiche-sdb by ID failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"GET fiche-sdb by ID connection error: {str(e)}"))
+    
+    # Test PUT /api/fiches-sdb/{id} (Update Plan 2D)
+    if created_fiche_id:
+        updated_plan_data = '{"version": "1.1", "scale": "1:50", "rooms": [{"id": "room1", "name": "Salon", "type": "rectangle", "x": 10, "y": 10, "width": 50, "height": 40}, {"id": "room2", "name": "Cuisine", "type": "rectangle", "x": 70, "y": 10, "width": 30, "height": 25}], "measurements": [{"from": {"x": 10, "y": 10}, "to": {"x": 60, "y": 10}, "value": "5.0m"}, {"from": {"x": 70, "y": 10}, "to": {"x": 100, "y": 10}, "value": "3.0m"}]}'
+        update_data = {
+            "plan_data": updated_plan_data,
+            "notes": "Plan 2D mis à jour avec cuisine ajoutée"
+        }
+        try:
+            response = requests.put(f"{BASE_URL}/fiches-sdb/{created_fiche_id}", json=update_data, headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                fiche = response.json()
+                if "room2" in fiche.get("plan_data", "") and "Cuisine" in fiche.get("plan_data", ""):
+                    results.append((True, f"PUT fiche-sdb successful - Plan 2D updated with new room"))
+                else:
+                    results.append((False, f"PUT fiche-sdb Plan 2D not updated correctly"))
+            else:
+                results.append((False, f"PUT fiche-sdb failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"PUT fiche-sdb connection error: {str(e)}"))
+    
+    # Test DELETE /api/fiches-sdb/{id}
+    if created_fiche_id:
+        try:
+            response = requests.delete(f"{BASE_URL}/fiches-sdb/{created_fiche_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                results.append((True, f"DELETE fiche-sdb successful - {data['message']}"))
+            else:
+                results.append((False, f"DELETE fiche-sdb failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"DELETE fiche-sdb connection error: {str(e)}"))
+    
+    return results
+
+def test_user_management(token):
+    """Test 8: User Management (Admin only)"""
+    print(f"\n🔍 Testing User Management (Admin only)")
+    
+    results = []
+    auth_headers = {**HEADERS, "Authorization": f"Bearer {token}"}
+    
+    # Test GET /api/users
+    try:
+        response = requests.get(f"{BASE_URL}/users", headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            users = response.json()
+            results.append((True, f"GET users successful - Found {len(users)} users"))
+        else:
+            results.append((False, f"GET users failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"GET users connection error: {str(e)}"))
+    
+    # Test POST /api/auth/register (Create new user)
+    test_user_data = {
+        "username": f"test_user_{datetime.now().strftime('%H%M%S')}",
+        "password": "TestPass123!",
+        "role": "employee"
+    }
+    created_user_id = None
+    
+    try:
+        response = requests.post(f"{BASE_URL}/auth/register", json=test_user_data, headers=auth_headers, timeout=10)
+        if response.status_code == 200:
+            user = response.json()
+            created_user_id = user.get("id")
+            if created_user_id and user.get("username") == test_user_data["username"]:
+                results.append((True, f"POST auth/register successful - Created user {user['username']}"))
+            else:
+                results.append((False, f"POST auth/register missing data: {user}"))
+        else:
+            results.append((False, f"POST auth/register failed - HTTP {response.status_code}: {response.text}"))
+    except requests.exceptions.RequestException as e:
+        results.append((False, f"POST auth/register connection error: {str(e)}"))
+    
+    # Test GET /api/users/{id}
+    if created_user_id:
+        try:
+            response = requests.get(f"{BASE_URL}/users/{created_user_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                user = response.json()
+                results.append((True, f"GET user by ID successful - Retrieved {user['username']}"))
+            else:
+                results.append((False, f"GET user by ID failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"GET user by ID connection error: {str(e)}"))
+    
+    # Test DELETE /api/users/{id}
+    if created_user_id:
+        try:
+            response = requests.delete(f"{BASE_URL}/users/{created_user_id}", headers=auth_headers, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                results.append((True, f"DELETE user successful - {data['message']}"))
+            else:
+                results.append((False, f"DELETE user failed - HTTP {response.status_code}: {response.text}"))
+        except requests.exceptions.RequestException as e:
+            results.append((False, f"DELETE user connection error: {str(e)}"))
+    
+    return results
+
 def test_security():
-    """Test 4: Security - access without token"""
+    """Test 9: Security - access without token"""
     print(f"\n🔍 Testing Security - Access without authentication")
     
     results = []
@@ -308,7 +708,12 @@ def test_security():
         ("POST", "/clients"),
         ("GET", "/clients/test-id"),
         ("PUT", "/clients/test-id"),
-        ("DELETE", "/clients/test-id")
+        ("DELETE", "/clients/test-id"),
+        ("GET", "/chantiers"),
+        ("GET", "/documents"),
+        ("GET", "/calculs-pac"),
+        ("GET", "/fiches-sdb"),
+        ("GET", "/users")
     ]
     
     for method, endpoint in protected_endpoints:
