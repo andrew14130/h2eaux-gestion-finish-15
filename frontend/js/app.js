@@ -222,6 +222,17 @@ class H2EAUXGestion {
                 this.state.currentUser.role === 'admin' ? 'Administrateur' : 'Employé';
             document.getElementById('userRole').className = 
                 `user-role ${this.state.currentUser.role}`;
+            
+            // Hide admin-only elements for non-admin users
+            if (this.state.currentUser.role !== 'admin') {
+                document.querySelectorAll('.admin-only').forEach(element => {
+                    element.style.display = 'none';
+                });
+            } else {
+                document.querySelectorAll('.admin-only').forEach(element => {
+                    element.style.display = '';
+                });
+            }
         }
     }
 
