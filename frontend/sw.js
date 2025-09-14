@@ -1,5 +1,5 @@
-const CACHE_NAME = 'h2eaux-gestion-v2.0.0';
-const API_CACHE_NAME = 'h2eaux-api-cache-v2.0.0';
+const CACHE_NAME = 'h2eaux-gestion-v3.0.0';
+const API_CACHE_NAME = 'h2eaux-api-cache-v3.0.0';
 
 // Files to cache for offline use
 const urlsToCache = [
