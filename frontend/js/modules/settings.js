@@ -394,5 +394,90 @@ window.settings = {
             button.textContent = originalText;
             button.disabled = false;
         }
+    },
+
+    showChangePasswordModal(userId, username) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">🔑 Changer le mot de passe</h3>
+                    <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p style="margin-bottom: 20px; color: var(--text-secondary);">
+                        Modifier le mot de passe pour <strong>${username}</strong>
+                    </p>
+                    
+                    <div class="form-group">
+                        <label>Nouveau mot de passe</label>
+                        <input type="password" id="newPassword" required minlength="6" 
+                               placeholder="Saisir le nouveau mot de passe">
+                        <small>Minimum 6 caractères</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Confirmer le mot de passe</label>
+                        <input type="password" id="confirmPassword" required minlength="6"
+                               placeholder="Confirmer le nouveau mot de passe">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="this.closest('.modal').remove()">Annuler</button>
+                    <button class="btn-primary" onclick="settings.changeUserPassword('${userId}', '${username}', this)">
+                        Changer le mot de passe
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('modals').appendChild(modal);
+        
+        // Focus on first input
+        setTimeout(() => {
+            document.getElementById('newPassword').focus();
+        }, 100);
+    },
+
+    async changeUserPassword(userId, username, button) {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (!newPassword || !confirmPassword) {
+            app.showMessage('Veuillez remplir tous les champs', 'error');
+            return;
+        }
+        
+        if (newPassword.length < 6) {
+            app.showMessage('Le mot de passe doit contenir au minimum 6 caractères', 'error');
+            return;
+        }
+        
+        if (newPassword !== confirmPassword) {
+            app.showMessage('Les mots de passe ne correspondent pas', 'error');
+            return;
+        }
+        
+        const originalText = button.textContent;
+        button.textContent = 'Modification...';
+        button.disabled = true;
+        
+        try {
+            await app.apiCall(`/users/${userId}/password`, {
+                method: 'PUT',
+                body: JSON.stringify({ new_password: newPassword })
+            });
+            
+            app.showMessage(`Mot de passe de ${username} modifié avec succès`, 'success');
+            button.closest('.modal').remove();
+            
+        } catch (error) {
+            console.error('Error changing password:', error);
+            app.showMessage('Erreur lors de la modification du mot de passe', 'error');
+        } finally {
+            button.textContent = originalText;
+            button.disabled = false;
+        }
     }
 };
