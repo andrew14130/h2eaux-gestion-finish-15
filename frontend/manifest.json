@@ -1,7 +1,7 @@
 {
   "name": "H2EAUX GESTION - Application Professionnelle PWA",
   "short_name": "H2EAUX GESTION",
-  "description": "Application professionnelle complète pour plomberie, climatisation et chauffage - Optimisée tablette Android avec mode hors ligne avancé",
+  "description": "Application PWA professionnelle pour la gestion de plomberie, climatisation et chauffage avec Plan 2D intégré",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
