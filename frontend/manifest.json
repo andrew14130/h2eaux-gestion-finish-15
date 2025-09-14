@@ -154,7 +154,7 @@
       "files": [
         {
           "name": "documents",
-          "accept": ["image/*", "application/pdf", ".doc", ".docx", ".xls", ".xlsx"]
+          "accept": ["image/*", "application/pdf", ".doc", ".docx", ".xls", ".xlsx", ".dwg", ".plan"]
         }
       ]
     }
