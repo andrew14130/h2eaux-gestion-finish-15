@@ -628,6 +628,9 @@ class UserUpdate(BaseModel):
     role: Optional[str] = None
     permissions: Optional[dict] = None
 
+class UserPasswordUpdate(BaseModel):
+    new_password: str
+
 @api_router.put("/users/{user_id}", response_model=UserResponse)
 async def update_user(
     user_id: str, 
