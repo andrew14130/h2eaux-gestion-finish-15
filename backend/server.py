@@ -664,6 +664,36 @@ async def update_user(
         created_at=updated_user["created_at"].isoformat()
     )
 
+@api_router.put("/users/{user_id}/password")
+async def update_user_password(
+    user_id: str, 
+    password_data: UserPasswordUpdate, 
+    current_user: User = Depends(get_current_user)
+):
+    if not current_user.permissions.get("parametres", False):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access to user management not permitted"
+        )
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Hash the new password
+    hashed_password = hash_password(password_data.new_password)
+    
+    # Update password in database
+    await db.users.update_one(
+        {"id": user_id}, 
+        {"$set": {"hashed_password": hashed_password}}
+    )
+    
+    return {"message": f"Password updated successfully for user {user['username']}"}
+
 @api_router.delete("/users/{user_id}")
 async def delete_user(user_id: str, current_user: User = Depends(get_current_user)):
     if not current_user.permissions.get("parametres", False):
