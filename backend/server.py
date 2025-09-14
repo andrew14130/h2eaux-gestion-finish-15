@@ -954,44 +954,44 @@ class CalculPACUpdate(BaseModel):
     puissance_totale_calculee: Optional[str] = None
     notes: Optional[str] = None
 
-# Fiche SDB routes
-@api_router.get("/fiches-sdb", response_model=List[FicheSDB])
+# Fiche Chantier Complete routes (étendu avec Plan 2D)
+@api_router.get("/fiches-sdb", response_model=List[FicheChantierComplete])
 async def get_fiches_sdb(current_user: User = Depends(get_current_user)):
     fiches = await db.fiches_sdb.find().sort("created_at", -1).to_list(1000)
-    return [FicheSDB(**fiche) for fiche in fiches]
+    return [FicheChantierComplete(**fiche) for fiche in fiches]
 
-@api_router.post("/fiches-sdb", response_model=FicheSDB)
-async def create_fiche_sdb(fiche_data: FicheSDBCreate, current_user: User = Depends(get_current_user)):
-    new_fiche = FicheSDB(**fiche_data.dict())
+@api_router.post("/fiches-sdb", response_model=FicheChantierComplete)
+async def create_fiche_sdb(fiche_data: FicheChantierCreate, current_user: User = Depends(get_current_user)):
+    new_fiche = FicheChantierComplete(**fiche_data.dict())
     await db.fiches_sdb.insert_one(new_fiche.dict())
     return new_fiche
 
-@api_router.get("/fiches-sdb/{fiche_id}", response_model=FicheSDB)
+@api_router.get("/fiches-sdb/{fiche_id}", response_model=FicheChantierComplete)
 async def get_fiche_sdb(fiche_id: str, current_user: User = Depends(get_current_user)):
     fiche = await db.fiches_sdb.find_one({"id": fiche_id})
     if not fiche:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Fiche SDB not found")
-    return FicheSDB(**fiche)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Fiche not found")
+    return FicheChantierComplete(**fiche)
 
-@api_router.put("/fiches-sdb/{fiche_id}", response_model=FicheSDB)
-async def update_fiche_sdb(fiche_id: str, fiche_data: FicheSDBUpdate, current_user: User = Depends(get_current_user)):
+@api_router.put("/fiches-sdb/{fiche_id}", response_model=FicheChantierComplete)
+async def update_fiche_sdb(fiche_id: str, fiche_data: FicheChantierUpdate, current_user: User = Depends(get_current_user)):
     fiche = await db.fiches_sdb.find_one({"id": fiche_id})
     if not fiche:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Fiche SDB not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Fiche not found")
     
     update_data = {k: v for k, v in fiche_data.dict().items() if v is not None}
     update_data["updated_at"] = datetime.utcnow()
     
     await db.fiches_sdb.update_one({"id": fiche_id}, {"$set": update_data})
     updated_fiche = await db.fiches_sdb.find_one({"id": fiche_id})
-    return FicheSDB(**updated_fiche)
+    return FicheChantierComplete(**updated_fiche)
 
 @api_router.delete("/fiches-sdb/{fiche_id}")
 async def delete_fiche_sdb(fiche_id: str, current_user: User = Depends(get_current_user)):
     result = await db.fiches_sdb.delete_one({"id": fiche_id})
     if result.deleted_count == 0:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Fiche SDB not found")
-    return {"message": "Fiche SDB deleted successfully"}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Fiche not found")
+    return {"message": "Fiche deleted successfully"}
 
 # Calcul PAC routes - Version étendue
 @api_router.get("/calculs-pac", response_model=List[CalculPACExtended])
