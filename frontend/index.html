@@ -276,6 +276,102 @@
                     </div>
                 </div>
 
+                <!-- FICHES CHANTIER MODULE -->
+                <div id="fichesModule" class="module">
+                    <div class="module-header">
+                        <h2>📋 Fiches Chantier</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="fichesChantier.showAddModal()">+ Nouvelle Fiche</button>
+                            <button class="btn-secondary" onclick="fichesChantier.exportPDF()">📄 Export PDF</button>
+                        </div>
+                    </div>
+                    
+                    <div class="module-filters">
+                        <input type="text" id="ficheSearch" placeholder="Rechercher une fiche..." onkeyup="fichesChantier.filter()">
+                        <select id="ficheSort" onchange="fichesChantier.sort()">
+                            <option value="nom">Trier par nom</option>
+                            <option value="date">Trier par date</option>
+                            <option value="client">Trier par client</option>
+                        </select>
+                    </div>
+                    
+                    <div id="fichesList" class="items-list">
+                        <!-- Contenu généré par fichesChantier.render() -->
+                    </div>
+                </div>
+
+                <!-- DOCUMENTS MODULE -->
+                <div id="documentsModule" class="module">
+                    <div class="module-header">
+                        <h2>📄 Gestion Documents</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="documents.showAddModal()">+ Nouveau Document</button>
+                            <button class="btn-secondary" onclick="documents.exportList()">📄 Export Liste</button>
+                        </div>
+                    </div>
+                    
+                    <div class="module-filters">
+                        <input type="text" id="docSearch" placeholder="Rechercher un document..." onkeyup="documents.filter()">
+                        <select id="docTypeFilter" onchange="documents.filterByType()">
+                            <option value="">Tous les types</option>
+                            <option value="facture">Factures</option>
+                            <option value="devis">Devis</option>
+                            <option value="contrat">Contrats</option>
+                            <option value="fiche_technique">Fiches techniques</option>
+                            <option value="rapport">Rapports</option>
+                        </select>
+                    </div>
+                    
+                    <div id="documentsList" class="items-list">
+                        <!-- Contenu généré par documents.render() -->
+                    </div>
+                </div>
+
+                <!-- CALENDRIER MODULE -->
+                <div id="calendrierModule" class="module">
+                    <div class="module-header">
+                        <h2>📅 Planning & Calendrier</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="calendrier.showAddRdvModal()">+ Nouveau RDV</button>
+                            <button class="btn-secondary" onclick="calendrier.exportPlanning()">📄 Export Planning</button>
+                        </div>
+                    </div>
+                    
+                    <div id="calendarContainer">
+                        <!-- Contenu généré par calendrier.render() -->
+                    </div>
+                </div>
+
+                <!-- MEG INTEGRATION MODULE -->
+                <div id="megModule" class="module">
+                    <div class="module-header">
+                        <h2>🔄 MEG Integration</h2>
+                        <div class="module-actions">
+                            <button class="btn-secondary" onclick="megIntegration.showImportModal('csv')">📥 Import CSV</button>
+                            <button class="btn-secondary" onclick="megIntegration.exportData('complet')">📤 Export Complet</button>
+                        </div>
+                    </div>
+                    
+                    <div id="megContainer">
+                        <!-- Contenu généré par megIntegration.render() -->
+                    </div>
+                </div>
+
+                <!-- CHAT ÉQUIPE MODULE -->
+                <div id="chatModule" class="module">
+                    <div class="module-header">
+                        <h2>💬 Chat Équipe</h2>
+                        <div class="module-actions">
+                            <button class="btn-secondary" onclick="chat.toggleOnlineStatus()">🔄 Statut</button>
+                            <button class="btn-secondary" onclick="chat.clearHistory()">🧹 Effacer</button>
+                        </div>
+                    </div>
+                    
+                    <div id="chatContainer">
+                        <!-- Contenu généré par chat.render() -->
+                    </div>
+                </div>
+
                 <!-- PARAMETRES MODULE -->
                 <div id="parametresModule" class="module">
                     <div class="module-header">
