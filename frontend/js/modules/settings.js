@@ -169,6 +169,7 @@ window.settings = {
                 </div>
                 <div class="item-actions">
                     <button class="btn-edit" onclick="settings.showEditUserModal('${user.id}')">Modifier</button>
+                    <button class="btn-secondary" onclick="settings.showChangePasswordModal('${user.id}', '${user.username}')" title="Changer le mot de passe">🔑 Mot de passe</button>
                     ${user.id !== app.state.currentUser?.id ? 
                         `<button class="btn-delete" onclick="settings.deleteUser('${user.id}', '${user.username}')">Supprimer</button>` 
                         : ''}
