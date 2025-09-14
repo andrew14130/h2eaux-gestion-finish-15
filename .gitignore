@@ -109,4 +109,7 @@ docker-compose.override.yml
 
 # Spécifique au projet
 deployment/secrets/
-config/production/
+config/production/-e 
+# Environment files
+*.env
+*.env.*
