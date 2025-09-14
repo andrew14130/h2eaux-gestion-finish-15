@@ -1,0 +1,38 @@
+# Dockerfile pour le Frontend PWA
+FROM nginx:alpine
+
+# Variables d'environnement
+ENV NODE_ENV=production
+
+# Installation des dépendances pour la build
+RUN apk add --no-cache nodejs npm
+
+# Copie des fichiers frontend
+COPY . /tmp/frontend
+WORKDIR /tmp/frontend
+
+# Optimisation des assets (optionnel)
+RUN echo "Optimizing frontend assets..." \
+    && find . -name "*.js" -type f -exec sh -c 'echo "Optimizing $1" && cp "$1" "$1.bak"' _ {} \; \
+    && find . -name "*.css" -type f -exec sh -c 'echo "Optimizing $1" && cp "$1" "$1.bak"' _ {} \;
+
+# Copie vers nginx
+RUN cp -r /tmp/frontend/* /usr/share/nginx/html/ \
+    && rm -rf /tmp/frontend
+
+# Configuration nginx pour PWA
+COPY ../deployment/nginx-frontend.conf /etc/nginx/conf.d/default.conf
+
+# Permissions
+RUN chown -R nginx:nginx /usr/share/nginx/html \
+    && chmod -R 755 /usr/share/nginx/html
+
+# Exposition du port
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1
+
+# Démarrage nginx
+CMD ["nginx", "-g", "daemon off;"]
