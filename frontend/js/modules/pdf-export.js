@@ -54,6 +54,19 @@ window.pdfExport = {
         return 75; // Return Y position for content start
     },
 
+    // Add logo to PDF
+    async addLogo(doc, x, y) {
+        const company = this.getCompanyInfo();
+        
+        if (company.logo && company.logo.startsWith('data:image')) {
+            try {
+                doc.addImage(company.logo, 'PNG', x, y, 30, 15);
+            } catch (error) {
+                console.warn('Could not add logo to PDF:', error);
+            }
+        }
+    },
+
     // Export single client
     async exportClient(client) {
         const { jsPDF } = window.jspdf;
