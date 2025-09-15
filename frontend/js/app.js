@@ -24,6 +24,21 @@ class H2EAUXGestion {
         this.init();
     }
 
+    getApiUrl() {
+        // Détecter l'URL automatiquement selon l'environnement
+        const hostname = window.location.hostname;
+        const protocol = window.location.protocol;
+        const port = window.location.port;
+        
+        // Si on est en local
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return `${protocol}//${hostname}:8001/api`;
+        }
+        
+        // Si on est en production (OVH ou autre)
+        return `${protocol}//${hostname}/api`;
+    }
+
     // ===== INITIALIZATION =====
     async init() {
         try {
