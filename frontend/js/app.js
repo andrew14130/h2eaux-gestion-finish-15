@@ -2,7 +2,7 @@
 class H2EAUXGestion {
     constructor() {
         this.config = {
-            apiUrl: 'https://4bb1929f-96b2-4e76-bb20-025e28511457.preview.emergentagent.com/api',
+            apiUrl: this.getApiUrl(),
             version: '2.0.0',
             autoUpdate: true
         };
