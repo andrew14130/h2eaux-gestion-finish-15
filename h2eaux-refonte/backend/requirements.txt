@@ -1,0 +1,42 @@
+# =============================================================================
+# H2EAUX GESTION - DÉPENDANCES BACKEND PYTHON
+# =============================================================================
+
+# Framework Web
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Base de données MongoDB
+motor==3.3.2
+pymongo==4.6.0
+
+# Authentification et sécurité
+python-jose[cryptography]==3.3.0
+python-multipart==0.0.6
+bcrypt==4.1.2
+passlib[bcrypt]==1.7.4
+
+# Configuration et environnement
+pydantic[email]==2.5.2
+pydantic-settings==2.1.0
+python-dotenv==1.0.0
+
+# HTTP et CORS
+starlette==0.27.0
+
+# Utilitaires
+typing-extensions==4.9.0
+
+# Tests (développement)
+pytest==7.4.3
+pytest-asyncio==0.21.1
+httpx==0.25.2
+
+# Linting et formatage (développement)
+black==23.11.0
+flake8==6.1.0
+isort==5.12.0
+mypy==1.7.1
+
+# Production et monitoring
+gunicorn==21.2.0
