@@ -1,0 +1,156 @@
+{
+  "name": "H2EAUX GESTION - Application Professionnelle PWA",
+  "short_name": "H2EAUX GESTION",
+  "description": "Application PWA professionnelle pour la gestion de plomberie, climatisation et chauffage avec Plan 2D intégré",
+  "start_url": "/",
+  "scope": "/",
+  "id": "h2eaux-gestion-pwa",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0F1419",
+  "theme_color": "#007AFF",
+  "categories": ["business", "productivity", "utilities"],
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "version": "3.0.0",
+  
+  "icons": [
+    {
+      "src": "assets/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Nouveau Client",
+      "short_name": "Client",
+      "description": "Ajouter un nouveau client rapidement",
+      "url": "/?shortcut=new-client",
+      "icons": [
+        {
+          "src": "assets/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Nouveau Chantier",
+      "short_name": "Chantier",
+      "description": "Créer un nouveau chantier rapidement",
+      "url": "/?shortcut=new-chantier",
+      "icons": [
+        {
+          "src": "assets/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Nouvelle Fiche Plan 2D",
+      "short_name": "Plan 2D",
+      "description": "Créer une fiche avec Plan 2D MagicPlan",
+      "url": "/?shortcut=new-fiche",
+      "icons": [
+        {
+          "src": "assets/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Calcul PAC",
+      "short_name": "PAC",
+      "description": "Dimensionner une PAC rapidement",
+      "url": "/?shortcut=new-pac",
+      "icons": [
+        {
+          "src": "assets/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  
+  "share_target": {
+    "action": "/share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "documents",
+          "accept": ["image/*", "application/pdf", ".doc", ".docx", ".xls", ".xlsx", ".dwg", ".plan"]
+        }
+      ]
+    }
+  },
+  
+  "protocol_handlers": [
+    {
+      "protocol": "mailto",
+      "url": "/?mailto=%s"
+    },
+    {
+      "protocol": "tel",
+      "url": "/?tel=%s"
+    }
+  ],
+  
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}
