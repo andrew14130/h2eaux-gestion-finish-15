@@ -457,3 +457,158 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== PDF IMPORT STYLES ===== */
+.pdf-drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    background: var(--surface);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin: 1rem 0;
+}
+
+.pdf-drop-zone:hover,
+.pdf-drop-zone.drag-over {
+    border-color: var(--primary);
+    background: rgba(0, 122, 255, 0.05);
+}
+
+.drop-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.drop-zone-icon {
+    font-size: 3rem;
+    opacity: 0.6;
+}
+
+.drop-zone-text {
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.pdf-info {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.file-icon {
+    font-size: 2rem;
+}
+
+.file-details {
+    flex: 1;
+}
+
+.file-name {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.file-size, .file-type {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.pdf-preview-frame {
+    margin-top: 1rem;
+}
+
+/* ===== DOCUMENT VIEWER STYLES ===== */
+.document-viewer .modal-content {
+    width: 95vw;
+    height: 95vh;
+    max-width: none;
+    max-height: none;
+}
+
+.pdf-viewer, .image-viewer, .generic-viewer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-toolbar, .image-toolbar {
+    padding: 1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 1rem;
+}
+
+.image-container {
+    flex: 1;
+    overflow: auto;
+    padding: 1rem;
+    background: #f8f9fa;
+}
+
+.generic-viewer {
+    text-align: center;
+    padding: 2rem;
+    justify-content: center;
+}
+
+.file-info-display {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.file-info-display .file-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+.file-info-display h3 {
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+
+.file-actions {
+    display: flex;
+    justify-content: center;
+}
+
+/* Success button style */
+.btn-success {
+    background: linear-gradient(135deg, var(--success), #34ce57);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
