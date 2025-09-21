@@ -11,7 +11,7 @@ import os
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://h2eaux-deploy.preview.emergentagent.com/api"
+BASE_URL = "https://h2eaux-pwa.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 # Test data
