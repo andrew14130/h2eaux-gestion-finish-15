@@ -25,22 +25,8 @@ class H2EAUXGestion {
     }
 
     getApiUrl() {
-        // Utiliser l'URL configurée dans config.js (sécurisé)
-        if (window.H2EAUX_CONFIG && window.H2EAUX_CONFIG.API_URL) {
-            return window.H2EAUX_CONFIG.API_URL;
-        }
-        
-        // Fallback sécurisé : détecter l'URL automatiquement
-        const hostname = window.location.hostname;
-        const protocol = window.location.protocol;
-        
-        // Si on est en local
-        if (hostname === 'localhost' || hostname === '127.0.0.1') {
-            return `${protocol}//${hostname}:8001/api`;
-        }
-        
-        // Si on est en production
-        return `${protocol}//${hostname}/api`;
+        // Mode local autonome - pas d'appel réseau externe
+        return '/api';
     }
 
     // ===== INITIALIZATION =====
