@@ -113,6 +113,24 @@ window.settings = {
         }
     },
 
+    resetLogo() {
+        if (confirm('Êtes-vous sûr de vouloir supprimer le logo personnalisé ?')) {
+            // Reset to default logo
+            this.data.company.logo = 'assets/logo.png';
+            
+            // Save to localStorage
+            localStorage.setItem('h2eaux_company_settings', JSON.stringify(this.data.company));
+            
+            // Update preview
+            document.getElementById('logoPreview').src = this.data.company.logo;
+            
+            // Update logos throughout the app
+            this.updateLogosInApp();
+            
+            app.showMessage('Logo réinitialisé avec succès', 'success');
+        }
+    },
+
     updateLogosInApp() {
         // Update all logo elements in the app with size control
         const logoElements = [
