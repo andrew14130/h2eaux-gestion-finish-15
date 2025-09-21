@@ -1,57 +1,21 @@
 // ===== CALCULS PAC MODULE =====
 window.calculsPac = {
-    data: [],
-    currentEdit: null,
-
     async load() {
-        try {
-            this.data = await app.apiCall('/calculs-pac');
-            this.render();
-        } catch (error) {
-            console.error('Error loading calculs PAC:', error);
-            app.showMessage('Erreur lors du chargement des calculs PAC', 'error');
-            this.data = [];
-            this.render();
-        }
+        this.render();
     },
 
     render() {
-        const container = document.getElementById('calculsList');
-        
-        if (this.data.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">🌡️</div>
-                    <h3>Aucun calcul PAC</h3>
-                    <p>Cliquez sur un type de PAC ci-dessus pour commencer</p>
-                </div>
-            `;
-            return;
-        }
-
-        container.innerHTML = this.data.map(calcul => `
-            <div class="item-card">
-                <div class="item-header">
-                    <div class="item-title">${calcul.nom}</div>
-                    <div class="item-actions">
-                        <span class="status-badge ${calcul.type_pac === 'air-eau' ? 'status-en-cours' : 'status-termine'}">
-                            ${calcul.type_pac === 'air-eau' ? 'Air/Eau' : 'Air/Air'}
-                        </span>
-                        <button class="btn-edit" onclick="calculsPac.showEditModal('${calcul.id}')">Modifier</button>
-                        <button class="btn-view" onclick="calculsPac.viewDetails('${calcul.id}')">Détails</button>
-                        <button class="btn-delete" onclick="calculsPac.delete('${calcul.id}', '${calcul.nom}')">Supprimer</button>
-                    </div>
-                </div>
-                <div class="item-info">
-                    ${calcul.client_nom ? `<div class="item-detail">👤 ${calcul.client_nom}</div>` : ''}
-                    ${calcul.zone_climatique ? `<div class="item-detail">🌍 Zone ${calcul.zone_climatique}</div>` : ''}
-                    ${calcul.puissance_calculee ? `<div class="item-detail">⚡ ${calcul.puissance_calculee} kW</div>` : ''}
-                    ${calcul.surface_totale ? `<div class="item-detail">📐 ${calcul.surface_totale} m²</div>` : ''}
-                    <div class="item-detail">📅 Créé le ${app.formatDate(calcul.created_at)}</div>
-                </div>
-            </div>
-        `).join('');
+        // Le contenu est maintenant directement dans le HTML
+        console.log('Module PAC - Page de sélection chargée');
     },
+
+    showPacAirEau() {
+        app.showModule('calculs-pac-air-eau');
+    },
+
+    showPacAirAir() {
+        app.showModule('calculs-pac-air-air');
+    }
 
     showAddModal(type) {
         this.currentEdit = null;
