@@ -242,11 +242,52 @@
                     </div>
                 </div>
 
+                <!-- CALCULS PAC MODULE (SÉLECTION) -->
+                <div id="calculs-pacModule" class="module">
+                    <div class="module-header">
+                        <h2>🌡️ Calculs PAC</h2>
+                        <p>Choisissez le type de pompe à chaleur à calculer</p>
+                    </div>
+                    
+                    <div class="pac-selection-container">
+                        <div class="pac-option-card" onclick="calculsPac.showPacAirEau()">
+                            <div class="pac-option-icon">🌡️</div>
+                            <div class="pac-option-content">
+                                <h3>PAC Air/Eau</h3>
+                                <p>Calculs pour pompes à chaleur air/eau</p>
+                                <ul>
+                                    <li>• Radiateurs existants (fonte, acier, alu)</li>
+                                    <li>• Températures départ/retour</li>
+                                    <li>• Plancher chauffant</li>
+                                    <li>• COP optimisé</li>
+                                </ul>
+                                <button class="btn-primary">Accéder aux calculs Air/Eau</button>
+                            </div>
+                        </div>
+
+                        <div class="pac-option-card" onclick="calculsPac.showPacAirAir()">
+                            <div class="pac-option-icon">❄️</div>
+                            <div class="pac-option-content">
+                                <h3>PAC Air/Air</h3>
+                                <p>Calculs pour pompes à chaleur air/air</p>
+                                <ul>
+                                    <li>• Menuiseries (simple à triple vitrage)</li>
+                                    <li>• Isolation RT2012/RE2020</li>
+                                    <li>• Mono/Multi-split/Gainable</li>
+                                    <li>• SCOP/SEER automatiques</li>
+                                </ul>
+                                <button class="btn-primary">Accéder aux calculs Air/Air</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- CALCULS PAC AIR/EAU MODULE -->
                 <div id="calculs-pac-air-eauModule" class="module">
                     <div class="module-header">
                         <h2>🌡️ PAC Air/Eau</h2>
                         <div class="module-actions">
+                            <button class="btn-secondary" onclick="app.showModule('calculs-pac')">← Retour PAC</button>
                             <button class="btn-primary" onclick="calculsPacAirEau.showAddModal()">+ Nouveau Calcul</button>
                             <button class="btn-secondary" onclick="calculsPacAirEau.exportList()">📄 Export</button>
                         </div>
@@ -272,6 +313,7 @@
                     <div class="module-header">
                         <h2>❄️ PAC Air/Air</h2>
                         <div class="module-actions">
+                            <button class="btn-secondary" onclick="app.showModule('calculs-pac')">← Retour PAC</button>
                             <button class="btn-primary" onclick="calculsPacAirAir.showAddModal()">+ Nouveau Calcul</button>
                             <button class="btn-secondary" onclick="calculsPacAirAir.exportList()">📄 Export</button>
                         </div>
