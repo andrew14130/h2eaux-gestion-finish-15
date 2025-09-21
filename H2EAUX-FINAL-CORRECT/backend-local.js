@@ -198,19 +198,34 @@ class H2eauxBackendLocal {
         }
     }
 
-    // Users
+    // Users management
     async getUsers() {
         const users = JSON.parse(localStorage.getItem('h2eaux_users') || '[]');
-        return this.createResponse(users.map(u => ({ ...u, password: undefined })));
+        return this.createResponse(users.map(u => ({ 
+            ...u, 
+            password: undefined // Ne pas exposer les mots de passe
+        })));
     }
 
     async createUser(body) {
         const data = JSON.parse(body || '{}');
         const users = JSON.parse(localStorage.getItem('h2eaux_users') || '[]');
         
+        // Vérifier si l'utilisateur existe déjà
+        if (users.find(u => u.username === data.username)) {
+            return this.createResponse({ error: 'Nom d\'utilisateur déjà existant' }, 400);
+        }
+        
         const newUser = {
             id: 'user_' + Date.now(),
-            ...data,
+            username: data.username,
+            password: data.password,
+            role: data.role || 'employee',
+            nom: data.nom || '',
+            prenom: data.prenom || '',
+            email: data.email || '',
+            telephone: data.telephone || '',
+            permissions: data.permissions || this.getDefaultPermissions(data.role),
             date_creation: new Date().toISOString()
         };
         
@@ -229,10 +244,43 @@ class H2eauxBackendLocal {
             return this.createResponse({ error: 'Utilisateur non trouvé' }, 404);
         }
         
-        users[index] = { ...users[index], ...data };
+        // Ne pas modifier le mot de passe s'il n'est pas fourni
+        if (data.password) {
+            users[index].password = data.password;
+        }
+        
+        users[index] = { 
+            ...users[index], 
+            ...data,
+            permissions: data.permissions || users[index].permissions
+        };
         localStorage.setItem('h2eaux_users', JSON.stringify(users));
         
         return this.createResponse({ ...users[index], password: undefined });
+    }
+
+    getDefaultPermissions(role) {
+        if (role === 'admin') {
+            return {
+                clients: true,
+                chantiers: true,
+                documents: true,
+                calculs_pac: true,
+                catalogues: true,
+                chat: true,
+                parametres: true
+            };
+        } else {
+            return {
+                clients: true,
+                chantiers: true,
+                documents: true,
+                calculs_pac: true,
+                catalogues: false,
+                chat: true,
+                parametres: false
+            };
+        }
     }
 
     async deleteUser(userId) {
