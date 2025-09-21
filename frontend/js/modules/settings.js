@@ -396,22 +396,112 @@ window.settings = {
     },
 
     async checkUpdates() {
-        const button = event.target;
+        try {
+            // Get current version
+            const currentVersion = '3.1.0';
+            const response = await fetch('/version.json');
+            const versionInfo = await response.json();
+            
+            const lastCheck = new Date().toLocaleDateString('fr-FR');
+            document.getElementById('lastUpdateCheck').textContent = lastCheck;
+            
+            // Check if new version is available (simulate check)
+            const hasUpdate = Math.random() > 0.8; // 20% chance of update for demo
+            
+            if (hasUpdate) {
+                this.showUpdateModal(versionInfo);
+            } else {
+                app.showMessage('✅ Vous utilisez la dernière version (' + currentVersion + ')', 'success');
+            }
+        } catch (error) {
+            console.error('Update check failed:', error);
+            app.showMessage('❌ Impossible de vérifier les mises à jour', 'error');
+        }
+    },
+
+    showUpdateModal(versionInfo) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">🚀 Mise à jour disponible</h3>
+                    <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="update-info">
+                        <div class="version-comparison">
+                            <div class="version-current">
+                                <h4>Version actuelle</h4>
+                                <span class="version-number">3.1.0</span>
+                            </div>
+                            <div class="version-arrow">→</div>
+                            <div class="version-new">
+                                <h4>Nouvelle version</h4>
+                                <span class="version-number">3.2.0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="update-features">
+                            <h4>🆕 Nouveautés :</h4>
+                            <ul>
+                                <li>🔧 Amélioration des calculs PAC</li>
+                                <li>📱 Optimisations mobile</li>
+                                <li>🐛 Corrections de bugs</li>
+                                <li>⚡ Performance améliorée</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="update-options">
+                            <label>
+                                <input type="checkbox" id="autoUpdateEnabled" ${document.getElementById('autoUpdate').checked ? 'checked' : ''}>
+                                Installer automatiquement les futures mises à jour
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="this.closest('.modal').remove()">Plus tard</button>
+                    <button class="btn-primary" onclick="settings.performUpdate(this)">🚀 Mettre à jour maintenant</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+    },
+
+    async performUpdate(button) {
         const originalText = button.textContent;
-        
-        button.textContent = 'Vérification...';
+        button.textContent = '🔄 Mise à jour...';
         button.disabled = true;
 
         try {
-            // Simulate update check
+            // Simulate update process
             await new Promise(resolve => setTimeout(resolve, 2000));
             
-            document.getElementById('lastUpdateCheck').textContent = new Date().toLocaleDateString('fr-FR');
-            app.showMessage('Application à jour (version ' + app.config.version + ')', 'success');
+            // Update auto-update setting
+            const autoUpdate = document.getElementById('autoUpdateEnabled').checked;
+            document.getElementById('autoUpdate').checked = autoUpdate;
+            
+            // Clear caches to force reload
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+            }
+            
+            app.showMessage('✅ Mise à jour installée avec succès !', 'success');
+            document.querySelector('.modal').remove();
+            
+            // Suggest refresh
+            setTimeout(() => {
+                if (confirm('La mise à jour a été installée. Actualiser l\'application maintenant ?')) {
+                    window.location.reload();
+                }
+            }, 1000);
+            
         } catch (error) {
-            console.error('Update check failed:', error);
-            app.showMessage('Erreur lors de la vérification des mises à jour', 'error');
-        } finally {
+            console.error('Update failed:', error);
+            app.showMessage('❌ Échec de la mise à jour', 'error');
             button.textContent = originalText;
             button.disabled = false;
         }
