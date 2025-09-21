@@ -623,6 +623,13 @@ window.documents = {
 
     async exportList() {
         try {
+            // Vérifier que jsPDF est chargé
+            if (typeof window.jsPDF === 'undefined') {
+                app.showMessage('Chargement de la bibliothèque PDF...', 'info');
+                await this.loadJsPDF();
+            }
+
+            const { jsPDF } = window.jsPDF;
             const doc = new jsPDF();
             
             doc.setFontSize(18);
@@ -653,8 +660,54 @@ window.documents = {
             
         } catch (error) {
             console.error('Error exporting documents:', error);
-            app.showMessage('Erreur lors de l\'export PDF', 'error');
+            app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
         }
+    },
+
+    async loadJsPDF() {
+        return new Promise((resolve, reject) => {
+            if (typeof window.jsPDF !== 'undefined') {
+                resolve();
+                return;
+            }
+
+            // Vérifier si jsPDF est déjà en cours de chargement
+            if (window.jsPDFLoading) {
+                // Attendre que le chargement en cours se termine
+                const checkLoaded = () => {
+                    if (typeof window.jsPDF !== 'undefined') {
+                        resolve();
+                    } else {
+                        setTimeout(checkLoaded, 100);
+                    }
+                };
+                checkLoaded();
+                return;
+            }
+
+            window.jsPDFLoading = true;
+
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+            script.onload = () => {
+                const autoTableScript = document.createElement('script');
+                autoTableScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js';
+                autoTableScript.onload = () => {
+                    window.jsPDFLoading = false;
+                    resolve();
+                };
+                autoTableScript.onerror = () => {
+                    window.jsPDFLoading = false;
+                    reject(new Error('Impossible de charger jsPDF autoTable'));
+                };
+                document.head.appendChild(autoTableScript);
+            };
+            script.onerror = () => {
+                window.jsPDFLoading = false;
+                reject(new Error('Impossible de charger jsPDF'));
+            };
+            document.head.appendChild(script);
+        });
     },
 
     filter() {
