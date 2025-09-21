@@ -19,8 +19,19 @@
     <link rel="stylesheet" href="css/fiches-chantier.css">
     
     <!-- Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" defer></script>
+    
+    <!-- Vérification du chargement jsPDF -->
+    <script>
+        window.addEventListener('load', function() {
+            if (typeof window.jsPDF === 'undefined') {
+                console.warn('jsPDF not loaded, will load dynamically when needed');
+            } else {
+                console.log('jsPDF loaded successfully');
+            }
+        });
+    </script>
 </head>
 <body>
     <div id="app">
