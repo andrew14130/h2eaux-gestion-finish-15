@@ -127,30 +127,7 @@ window.chat = {
         this.render();
     },
 
-    simulateResponse() {
-        const responses = [
-            'Reçu !',
-            'D\'accord, je m\'en occupe.',
-            'Merci pour l\'info.',
-            'Parfait, à plus tard.',
-            'Ok, je note.',
-            'C\'est noté, merci !',
-            'Bien reçu l\'information.'
-        ];
-
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        const responseMessage = {
-            id: Date.now().toString(),
-            user: 'employe1',
-            username: 'Jean Dupont',
-            message: randomResponse,
-            timestamp: new Date().toISOString(),
-            type: 'message'
-        };
-
-        this.messages.push(responseMessage);
-        this.render();
-    },
+    // Fonction supprimée - pas de bots automatiques
 
     toggleOnlineStatus() {
         this.isOnline = !this.isOnline;
