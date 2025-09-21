@@ -179,7 +179,7 @@ class H2eauxBackendLocal {
         }
     }
 
-    // Authentication
+    // Authentication et registration
     async handleLogin(body) {
         const data = JSON.parse(body || '{}');
         const users = JSON.parse(localStorage.getItem('h2eaux_users') || '[]');
@@ -206,6 +206,49 @@ class H2eauxBackendLocal {
         } else {
             return this.createResponse({ detail: 'Identifiants incorrects' }, 401);
         }
+    }
+
+    async handleRegister(body) {
+        const data = JSON.parse(body || '{}');
+        const users = JSON.parse(localStorage.getItem('h2eaux_users') || '[]');
+        
+        // Vérifier si l'utilisateur existe déjà
+        if (users.find(u => u.username === data.username)) {
+            return this.createResponse({ detail: 'Nom d\'utilisateur déjà existant' }, 400);
+        }
+        
+        const newUser = {
+            id: 'user_' + Date.now(),
+            username: data.username,
+            password: data.password,
+            role: data.role || 'employee',
+            nom: data.nom || '',
+            prenom: data.prenom || '',
+            email: data.email || '',
+            telephone: data.telephone || '',
+            permissions: data.permissions || this.getDefaultPermissions(data.role),
+            date_creation: new Date().toISOString()
+        };
+        
+        users.push(newUser);
+        localStorage.setItem('h2eaux_users', JSON.stringify(users));
+        
+        return this.createResponse({ ...newUser, password: undefined }, 201);
+    }
+
+    async changePassword(userId, body) {
+        const data = JSON.parse(body || '{}');
+        const users = JSON.parse(localStorage.getItem('h2eaux_users') || '[]');
+        
+        const index = users.findIndex(u => u.id === userId);
+        if (index === -1) {
+            return this.createResponse({ error: 'Utilisateur non trouvé' }, 404);
+        }
+        
+        users[index].password = data.new_password;
+        localStorage.setItem('h2eaux_users', JSON.stringify(users));
+        
+        return this.createResponse({ message: 'Mot de passe modifié avec succès' });
     }
 
     // Users management
