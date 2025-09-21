@@ -109,8 +109,13 @@
                     <button class="nav-item" data-module="chantiers">
                         🏗️ Chantiers
                     </button>
-                    <button class="nav-item" data-module="calculs-pac-air-eau">🌡️ PAC Air/Eau</button>
-                    <button class="nav-item" data-module="calculs-pac-air-air">❄️ PAC Air/Air</button>
+                    <div class="nav-dropdown">
+                        <button class="nav-item nav-dropdown-toggle">🌡️ Calculs PAC</button>
+                        <div class="nav-dropdown-menu">
+                            <button class="nav-dropdown-item" data-module="calculs-pac-air-eau">🌡️ PAC Air/Eau</button>
+                            <button class="nav-dropdown-item" data-module="calculs-pac-air-air">❄️ PAC Air/Air</button>
+                        </div>
+                    </div>
                     <button class="nav-item" data-module="documents">
                         📄 Documents
                     </button>
