@@ -76,6 +76,42 @@ class H2EAUXGestion {
             });
         });
 
+        // Initialize dropdown navigation
+        document.querySelectorAll('.nav-dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const moduleId = e.target.getAttribute('data-module');
+                if (moduleId) {
+                    this.showModule(moduleId);
+                    // Close dropdown
+                    e.target.closest('.nav-dropdown').classList.remove('active');
+                }
+            });
+        });
+
+        // Toggle dropdown
+        document.querySelectorAll('.nav-dropdown-toggle').forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const dropdown = e.target.closest('.nav-dropdown');
+                const isActive = dropdown.classList.contains('active');
+                
+                // Close all dropdowns first
+                document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('active'));
+                
+                // Toggle current dropdown
+                if (!isActive) {
+                    dropdown.classList.add('active');
+                }
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-dropdown')) {
+                document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('active'));
+            }
+        });
+
         // Auto-update check
         if (this.config.autoUpdate) {
             setInterval(() => this.checkUpdates(), 3600000); // Check every hour
