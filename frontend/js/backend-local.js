@@ -154,9 +154,15 @@ class H2eauxBackendLocal {
             }
 
             if (path.startsWith('users/')) {
-                const userId = path.split('/')[1];
-                if (method === 'PUT') return this.updateUser(userId, options.body);
-                if (method === 'DELETE') return this.deleteUser(userId);
+                const pathParts = path.split('/');
+                const userId = pathParts[1];
+                
+                if (pathParts.length === 2) {
+                    if (method === 'PUT') return this.updateUser(userId, options.body);
+                    if (method === 'DELETE') return this.deleteUser(userId);
+                } else if (pathParts.length === 3 && pathParts[2] === 'password') {
+                    if (method === 'PUT') return this.changePassword(userId, options.body);
+                }
             }
 
             // Clients
