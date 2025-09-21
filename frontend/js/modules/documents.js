@@ -215,12 +215,13 @@ window.documents = {
             document.getElementById('pdfDocName').value = file.name.replace('.pdf', '');
             
             // Show file info
+            const fileSize = this.formatFileSize(file.size);
             document.getElementById('pdfInfo').innerHTML = `
                 <div class="file-info">
                     <div class="file-icon">📄</div>
                     <div class="file-details">
                         <div class="file-name">${file.name}</div>
-                        <div class="file-size">${this.formatFileSize(file.size)}</div>
+                        <div class="file-size">${fileSize}</div>
                         <div class="file-type">PDF Document</div>
                     </div>
                 </div>
