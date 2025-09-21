@@ -225,6 +225,9 @@ class H2EAUXGestion {
     async loadAppData() {
         if (!this.state.isLoggedIn) return;
 
+        // Check for version migration
+        await this.checkVersionMigration();
+
         try {
             // Load all data in parallel
             const [clientsData, chantiersData, calculsPacData] = await Promise.allSettled([
@@ -241,6 +244,57 @@ class H2EAUXGestion {
         } catch (error) {
             console.error('Error loading app data:', error);
         }
+    }
+
+    async checkVersionMigration() {
+        const currentVersion = '3.1.0';
+        const lastVersion = localStorage.getItem('h2eaux_app_version');
+        
+        if (lastVersion && lastVersion !== currentVersion) {
+            console.log(`🔄 Migration from ${lastVersion} to ${currentVersion}`);
+            
+            // Clear potential incompatible data for major version changes
+            if (!lastVersion.startsWith('3.1')) {
+                // Clear cache and some stored data to avoid conflicts
+                const preserveKeys = [
+                    'h2eaux_users',
+                    'h2eaux_current_user', 
+                    'h2eaux_current_token',
+                    'h2eaux_company_settings'
+                ];
+                
+                // Clear non-essential localStorage data
+                const keysToDelete = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('h2eaux_') && !preserveKeys.includes(key)) {
+                        keysToDelete.push(key);
+                    }
+                }
+                
+                keysToDelete.forEach(key => {
+                    console.log(`Clearing old data: ${key}`);
+                    localStorage.removeItem(key);
+                });
+                
+                // Clear service worker cache
+                if ('serviceWorker' in navigator) {
+                    try {
+                        const registrations = await navigator.serviceWorker.getRegistrations();
+                        for (let registration of registrations) {
+                            await registration.unregister();
+                        }
+                        console.log('Service workers cleared for migration');
+                    } catch (error) {
+                        console.error('Error clearing service workers:', error);
+                    }
+                }
+                
+                this.showMessage(`🔄 Application mise à jour vers la version ${currentVersion}. Données compatibles préservées.`, 'success');
+            }
+        }
+        
+        localStorage.setItem('h2eaux_app_version', currentVersion);
     }
 
     updateDashboardStats() {
