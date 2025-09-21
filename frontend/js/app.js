@@ -329,7 +329,7 @@ class H2EAUXGestion {
             this.state.currentModule = moduleId;
             
             // Load module data
-            this.loadModuleData(moduleId);
+            await this.loadModuleData(moduleId);
         }
     }
 
