@@ -234,17 +234,46 @@ window.documents = {
             return;
         }
 
+        const fileInput = document.getElementById('docFile');
+        const file = fileInput.files[0];
+
         try {
-            // Simulate save (would normally upload file and save metadata)
+            let fileData = null;
+            let fileSize = 0;
+            let mimeType = null;
+
+            // Process file if one is selected
+            if (file) {
+                fileSize = file.size;
+                mimeType = file.type;
+                
+                // Convert file to base64 for storage
+                const reader = new FileReader();
+                fileData = await new Promise((resolve, reject) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
             const newDoc = {
                 ...formData,
-                id: Date.now().toString(),
-                taille: '125 KB',
+                id: 'doc_' + Date.now(),
+                taille: file ? this.formatFileSize(fileSize) : '0 KB',
+                file_data: fileData,
+                mime_type: mimeType,
+                file_name: file ? file.name : null,
                 created_at: new Date().toISOString()
             };
             
-            this.data.unshift(newDoc);
-            this.render();
+            // Save to backend local
+            await app.apiCall('/documents', {
+                method: 'POST',
+                body: JSON.stringify(newDoc)
+            });
+            
+            // Refresh data
+            await this.load();
             
             app.showMessage('Document enregistré avec succès', 'success');
             document.querySelector('.modal').remove();
