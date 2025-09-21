@@ -247,31 +247,53 @@
                     </div>
                 </div>
 
-                <!-- CALCULS PAC MODULE -->
-                <div id="calculs-pacModule" class="module">
+                <!-- CALCULS PAC AIR/EAU MODULE -->
+                <div id="calculs-pac-air-eauModule" class="module">
                     <div class="module-header">
-                        <h2>🌡️ Calculs PAC</h2>
+                        <h2>🌡️ PAC Air/Eau</h2>
                         <div class="module-actions">
-                            <button class="btn-primary" onclick="calculsPac.showTypeModal()">+ Nouveau Calcul</button>
-                            <button class="btn-secondary" onclick="calculsPac.exportPDF()">📄 Export PDF</button>
+                            <button class="btn-primary" onclick="calculsPacAirEau.showAddModal()">+ Nouveau Calcul</button>
+                            <button class="btn-secondary" onclick="calculsPacAirEau.exportList()">📄 Export</button>
                         </div>
                     </div>
                     
-                    <div class="pac-types">
-                        <div class="pac-type-card" onclick="calculsPac.showAddModal('air-eau')">
-                            <div class="pac-icon">🌡️</div>
-                            <h3>PAC Air/Eau</h3>
-                            <p>Chauffage central</p>
-                        </div>
-                        <div class="pac-type-card" onclick="calculsPac.showAddModal('air-air')">
-                            <div class="pac-icon">❄️</div>
-                            <h3>PAC Air/Air</h3>
-                            <p>Climatisation</p>
+                    <div class="module-filters">
+                        <input type="text" id="calculAirEauSearch" placeholder="Rechercher un calcul Air/Eau..." onkeyup="calculsPacAirEau.filter()">
+                        <select id="calculAirEauFilter" onchange="calculsPacAirEau.filter()">
+                            <option value="all">Tous les calculs</option>
+                            <option value="recent">Récents</option>
+                            <option value="haute_temp">Haute température</option>
+                            <option value="basse_temp">Basse température</option>
+                        </select>
+                    </div>
+                    
+                    <div id="calculsPacAirEauList" class="items-list">
+                        <!-- Contenu généré par calculsPacAirEau.render() -->
+                    </div>
+                </div>
+
+                <!-- CALCULS PAC AIR/AIR MODULE -->
+                <div id="calculs-pac-air-airModule" class="module">
+                    <div class="module-header">
+                        <h2>❄️ PAC Air/Air</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="calculsPacAirAir.showAddModal()">+ Nouveau Calcul</button>
+                            <button class="btn-secondary" onclick="calculsPacAirAir.exportList()">📄 Export</button>
                         </div>
                     </div>
                     
-                    <div id="calculsList" class="items-list">
-                        <!-- Calculs will be loaded here -->
+                    <div class="module-filters">
+                        <input type="text" id="calculAirAirSearch" placeholder="Rechercher un calcul Air/Air..." onkeyup="calculsPacAirAir.filter()">
+                        <select id="calculAirAirFilter" onchange="calculsPacAirAir.filter()">
+                            <option value="all">Tous les calculs</option>
+                            <option value="mono_split">Mono-split</option>
+                            <option value="multi_split">Multi-split</option>
+                            <option value="gainable">Gainable</option>
+                        </select>
+                    </div>
+                    
+                    <div id="calculsPacAirAirList" class="items-list">
+                        <!-- Contenu généré par calculsPacAirAir.render() -->
                     </div>
                 </div>
 
