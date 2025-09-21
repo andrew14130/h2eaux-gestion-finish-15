@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>H2EAUX GESTION - Application Professionnelle</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007AFF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="H2EAUX GESTION">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/modules.css">
+    <link rel="stylesheet" href="css/pac-advanced.css">
+    <link rel="stylesheet" href="css/fiches-chantier.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- LOADING SCREEN -->
+        <div id="loadingScreen" class="loading-screen">
+            <div class="loading-content">
+                <div class="company-logo-loading">
+                    <img id="loadingLogo" src="assets/logo.png" alt="Logo" onerror="this.style.display='none'">
+                </div>
+                <div class="loading-logo">H2EAUX GESTION</div>
+                <div class="loading-subtitle">PLOMBERIE • CLIMATISATION • CHAUFFAGE</div>
+                <div class="spinner"></div>
+                <div class="loading-text">Chargement de l'application...</div>
+                <div class="loading-version">Version 2.0.0 - Application Tablette</div>
+            </div>
+        </div>
+
+        <!-- LOGIN SCREEN -->
+        <div id="loginScreen" class="screen">
+            <div class="login-container">
+                <div class="login-header">
+                    <div class="company-logo">
+                        <img id="loginLogo" src="assets/logo.png" alt="Logo Entreprise" onerror="this.style.display='none'">
+                    </div>
+                    <div class="app-title">H2EAUX GESTION</div>
+                    <div class="app-subtitle">PLOMBERIE • CLIMATISATION • CHAUFFAGE</div>
+                    <div class="app-version">Application Tablette Professionnelle v2.0</div>
+                </div>
+
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label>Nom d'utilisateur</label>
+                        <input type="text" id="username" required autocomplete="username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Mot de passe</label>
+                        <input type="password" id="password" required autocomplete="current-password">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" id="loginBtn">
+                        <span id="loginBtnText">Se connecter</span>
+                        <div id="loginSpinner" class="spinner-small hidden"></div>
+                    </button>
+                </form>
+
+                <div class="login-demo">
+                    <div class="demo-header">Identifiants de test</div>
+                    <div class="demo-credentials">
+                        <div><strong>Admin:</strong> admin / admin123</div>
+                        <div><strong>Employé:</strong> employe1 / employe123</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN APP -->
+        <div id="mainApp" class="app-container hidden">
+            <header class="app-header">
+                <div class="header-left">
+                    <div class="app-logo">
+                        <img id="headerLogo" src="assets/logo.png" alt="Logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="app-info">
+                        <div class="app-name">H2EAUX GESTION</div>
+                        <div class="app-tagline">Application Tablette Professionnelle</div>
+                    </div>
+                </div>
+                
+                <nav class="main-nav">
+                    <button class="nav-item active" data-module="dashboard">🏠 Dashboard</button>
+                    <button class="nav-item" data-module="clients">👥 Clients</button>
+                    <button class="nav-item" data-module="chantiers">🏗️ Chantiers</button>
+                    <button class="nav-item" data-module="calculs-pac">🌡️ Calculs PAC</button>
+                    <button class="nav-item" data-module="documents">📄 Documents</button>
+                    <button class="nav-item" data-module="fiches-chantier">📋 Fiches Chantier</button>
+                    <button class="nav-item" data-module="calendrier-rdv">📅 Calendrier</button>
+                    <button class="nav-item" data-module="meg-integration">🔗 MEG Integration</button>
+                    <button class="nav-item" data-module="chat">💬 Chat Équipe</button>
+                    <button class="nav-item admin-only" data-module="parametres">⚙️ Paramètres</button>
+                </nav>
+
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Admin</div>
+                        <div class="user-role" id="userRole">Administrateur</div>
+                    </div>
+                    <button class="btn-logout" onclick="app.logout()">Déconnexion</button>
+                </div>
+            </header>
+
+            <main class="app-main">
+                <!-- DASHBOARD MODULE -->
+                <div id="dashboardModule" class="module active">
+                    <div class="module-header">
+                        <h2>📊 Dashboard</h2>
+                        <p>Vue d'ensemble de votre activité</p>
+                    </div>
+                    
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="totalClients">0</div>
+                                <div class="stat-label">Clients</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">🏗️</div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="totalChantiers">0</div>
+                                <div class="stat-label">Chantiers</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">🌡️</div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="totalCalculs">0</div>
+                                <div class="stat-label">Calculs PAC</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="totalRevenu">0,00 €</div>
+                                <div class="stat-label">Chiffre d'affaires</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-actions">
+                        <div class="action-card" onclick="app.showModule('clients')">
+                            <div class="action-icon">👥</div>
+                            <div class="action-content">
+                                <h3>Nouveau Client</h3>
+                                <p>Ajouter un client à votre base</p>
+                            </div>
+                        </div>
+                        
+                        <div class="action-card highlighted" onclick="app.showModule('chantiers')">
+                            <div class="action-icon">🏗️</div>
+                            <div class="action-content">
+                                <h3>Nouveau Chantier</h3>
+                                <p>Créer un nouveau projet</p>
+                            </div>
+                        </div>
+                        
+                        <div class="action-card" onclick="app.showModule('calculs-pac')">
+                            <div class="action-icon">🌡️</div>
+                            <div class="action-content">
+                                <h3>Calcul PAC</h3>
+                                <p>Dimensionner une installation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CLIENTS MODULE -->
+                <div id="clientsModule" class="module">
+                    <div class="module-header">
+                        <h2>👥 Gestion Clients</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="clients.showAddModal()">+ Nouveau Client</button>
+                            <button class="btn-secondary" onclick="clients.exportList()">📄 Export</button>
+                        </div>
+                    </div>
+                    
+                    <div class="module-filters">
+                        <input type="text" id="clientSearch" placeholder="Rechercher un client..." onkeyup="clients.filter()">
+                        <select id="clientFilter" onchange="clients.filter()">
+                            <option value="all">Tous les clients</option>
+                            <option value="recent">Récents</option>
+                            <option value="vip">VIP</option>
+                        </select>
+                    </div>
+                    
+                    <div id="clientsList" class="items-list">
+                        <!-- Contenu généré par clients.render() -->
+                    </div>
+                </div>
+
+                <!-- CHANTIERS MODULE -->
+                <div id="chantiersModule" class="module">
+                    <div class="module-header">
+                        <h2>🏗️ Gestion Chantiers</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="chantiers.showAddModal()">+ Nouveau Chantier</button>
+                            <button class="btn-secondary" onclick="chantiers.exportList()">📄 Export</button>
+                        </div>
+                    </div>
+                    
+                    <div class="module-filters">
+                        <input type="text" id="chantierSearch" placeholder="Rechercher un chantier..." onkeyup="chantiers.filter()">
+                        <select id="chantierFilter" onchange="chantiers.filter()">
+                            <option value="all">Tous les chantiers</option>
+                            <option value="en_cours">En cours</option>
+                            <option value="planifie">Planifiés</option>
+                            <option value="termine">Terminés</option>
+                        </select>
+                    </div>
+                    
+                    <div id="chantiersList" class="items-list">
+                        <!-- Contenu généré par chantiers.render() -->
+                    </div>
+                </div>
+
+                <!-- CALCULS PAC MODULE -->
+                <div id="calculs-pacModule" class="module">
+                    <div class="module-header">
+                        <h2>🌡️ Calculs PAC</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="calculsPac.showAddModal()">+ Nouveau Calcul</button>
+                            <button class="btn-secondary" onclick="calculsPac.exportList()">📄 Export</button>
+                        </div>
+                    </div>
+                    
+                    <div class="module-filters">
+                        <input type="text" id="calculSearch" placeholder="Rechercher un calcul..." onkeyup="calculsPac.filter()">
+                        <select id="calculFilter" onchange="calculsPac.filter()">
+                            <option value="all">Tous les calculs</option>
+                            <option value="air_air">Air/Air</option>
+                            <option value="air_eau">Air/Eau</option>
+                            <option value="geothermie">Géothermie</option>
+                        </select>
+                    </div>
+                    
+                    <div id="calculsList" class="items-list">
+                        <!-- Contenu généré par calculsPac.render() -->
+                    </div>
+                </div>
+
+                <!-- DOCUMENTS MODULE -->
+                <div id="documentsModule" class="module">
+                    <div class="module-header">
+                        <h2>📄 Gestion Documents</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="documents.showAddModal()">+ Nouveau Document</button>
+                            <button class="btn-success" onclick="documents.showImportPDFModal()">📥 Import PDF</button>
+                            <button class="btn-secondary" onclick="documents.exportList()">📄 Export Liste</button>
+                        </div>
+                    </div>
+                    
+                    <div class="module-filters">
+                        <input type="text" id="docSearch" placeholder="Rechercher un document..." onkeyup="documents.filter()">
+                        <select id="docFilter" onchange="documents.filter()">
+                            <option value="all">Tous les types</option>
+                            <option value="facture">Factures</option>
+                            <option value="devis">Devis</option>
+                            <option value="contrat">Contrats</option>
+                            <option value="rapport">Rapports</option>
+                        </select>
+                    </div>
+                    
+                    <div id="documentsList" class="items-list">
+                        <!-- Contenu généré par documents.render() -->
+                    </div>
+                </div>
+
+                <!-- FICHES CHANTIER MODULE -->
+                <div id="fiches-chantierModule" class="module">
+                    <div class="module-header">
+                        <h2>📋 Fiches Chantier</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="fichesChantier.showAddModal()">+ Nouvelle Fiche</button>
+                            <button class="btn-secondary" onclick="fichesChantier.exportList()">📄 Export PDF</button>
+                        </div>
+                    </div>
+                    
+                    <div class="module-filters">
+                        <input type="text" id="ficheSearch" placeholder="Rechercher une fiche..." onkeyup="fichesChantier.filter()">
+                        <select id="ficheFilter" onchange="fichesChantier.filter()">
+                            <option value="all">Toutes les fiches</option>
+                            <option value="planifie">Planifiées</option>
+                            <option value="en_cours">En cours</option>
+                            <option value="termine">Terminées</option>
+                        </select>
+                    </div>
+                    
+                    <div id="fichesList" class="items-list">
+                        <!-- Contenu généré par fichesChantier.render() -->
+                    </div>
+                </div>
+
+                <!-- CALENDRIER MODULE -->
+                <div id="calendrier-rdvModule" class="module">
+                    <div class="module-header">
+                        <h2>📅 Calendrier RDV</h2>
+                        <div class="module-actions">
+                            <button class="btn-primary" onclick="calendrier.showAddModal()">+ Nouveau RDV</button>
+                            <button class="btn-secondary" onclick="calendrier.exportCalendar()">📄 Export</button>
+                        </div>
+                    </div>
+                    
+                    <div id="calendarContainer" class="calendar-container">
+                        <!-- Contenu généré par calendrier.render() -->
+                    </div>
+                </div>
+
+                <!-- MEG INTEGRATION MODULE -->
+                <div id="meg-integrationModule" class="module">
+                    <div class="module-header">
+                        <h2>🔗 MEG Integration</h2>
+                        <p>Synchronisation avec les systèmes MEG</p>
+                    </div>
+                    
+                    <div class="integration-status">
+                        <div class="status-card">
+                            <div class="status-indicator offline"></div>
+                            <div class="status-content">
+                                <h3>Statut MEG</h3>
+                                <p>Non connecté</p>
+                            </div>
+                            <button class="btn-primary" onclick="meg.connect()">Se connecter</button>
+                        </div>
+                    </div>
+                    
+                    <div id="megContainer">
+                        <!-- Contenu généré par meg.render() -->
+                    </div>
+                </div>
+
+                <!-- CHAT MODULE -->
+                <div id="chatModule" class="module">
+                    <div class="module-header">
+                        <h2>💬 Chat Équipe</h2>
+                        <div class="module-actions">
+                            <button class="btn-secondary" onclick="chat.clearHistory()">🧹 Effacer</button>
+                        </div>
+                    </div>
+                    
+                    <div id="chatContainer">
+                        <!-- Contenu généré par chat.render() -->
+                    </div>
+                </div>
+
+                <!-- PARAMETRES MODULE -->
+                <div id="parametresModule" class="module">
+                    <div class="module-header">
+                        <h2>⚙️ Paramètres</h2>
+                        <p>Configuration de l'application</p>
+                    </div>
+                    
+                    <div class="settings-sections">
+                        <div class="settings-section">
+                            <h3>🏢 Informations Entreprise</h3>
+                            <form id="companyForm">
+                                <div class="form-group">
+                                    <label>Nom de l'entreprise</label>
+                                    <input type="text" id="companyName" value="H2EAUX GESTION">
+                                </div>
+                                <div class="form-group">
+                                    <label>Slogan</label>
+                                    <input type="text" id="companySlogan" value="PLOMBERIE • CLIMATISATION • CHAUFFAGE">
+                                </div>
+                                <div class="form-group">
+                                    <label>Logo de l'entreprise</label>
+                                    <input type="file" id="logoUpload" accept="image/*" onchange="settings.uploadLogo()">
+                                    <div class="logo-preview">
+                                        <img id="logoPreview" src="assets/logo.png" alt="Logo actuel">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary">Enregistrer</button>
+                            </form>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3>👥 Gestion Utilisateurs</h3>
+                            <div class="users-list" id="usersList">
+                                <!-- Users will be loaded here -->
+                            </div>
+                            <button class="btn-primary" onclick="settings.showAddUserModal()">+ Nouvel Utilisateur</button>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3>🔄 Mise à jour</h3>
+                            <div class="update-info">
+                                <p>Version actuelle: <strong>2.0.0</strong></p>
+                                <p>Dernière vérification: <span id="lastUpdateCheck">Jamais</span></p>
+                                <button class="btn-secondary" onclick="settings.checkUpdates()">Vérifier les mises à jour</button>
+                                <div class="auto-update-setting">
+                                    <label>
+                                        <input type="checkbox" id="autoUpdate" checked>
+                                        Mise à jour automatique
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- MODALS -->
+        <div id="modals"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/backend-local.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/modules/clients.js"></script>
+    <script src="js/modules/chantiers.js"></script>
+    <script src="js/modules/calculs-pac-advanced.js"></script>
+    <script src="js/modules/fiches-chantier.js"></script>
+    <script src="js/modules/documents.js"></script>
+    <script src="js/modules/calendrier.js"></script>
+    <script src="js/modules/meg-integration.js"></script>
+    <script src="js/modules/chat.js"></script>
+    <script src="js/modules/settings.js"></script>
+    <script src="js/modules/pdf-export.js"></script>
+    
+    <!-- Advanced PWA Scripts -->
+    <script src="js/offline.js"></script>
+    <script src="js/update-manager.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw-advanced.js')
+                .then(registration => {
+                    console.log('Advanced SW registered:', registration);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker?.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // Show update notification
+                                if (window.updateManager) {
+                                    updateManager.showUpdateAvailable();
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch(error => console.log('SW registration failed:', error));
+        }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new H2EAUXGestion();
+        });
+    </script>
+</body>
+</html>
