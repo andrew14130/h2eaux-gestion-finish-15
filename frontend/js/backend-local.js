@@ -360,6 +360,22 @@ class H2eauxBackendLocal {
         return this.createResponse({ message: 'Utilisateur supprimé' });
     }
 
+    async changePassword(userId, body) {
+        const data = JSON.parse(body || '{}');
+        const users = JSON.parse(localStorage.getItem('h2eaux_users') || '[]');
+        
+        const userIndex = users.findIndex(u => u.id === userId);
+        if (userIndex === -1) {
+            return this.createResponse({ detail: 'Utilisateur non trouvé' }, 404);
+        }
+        
+        // Mettre à jour le mot de passe
+        users[userIndex].password = data.new_password;
+        localStorage.setItem('h2eaux_users', JSON.stringify(users));
+        
+        return this.createResponse({ message: 'Mot de passe modifié avec succès' });
+    }
+
     // Clients
     async getClients() {
         const clients = JSON.parse(localStorage.getItem('h2eaux_clients') || '[]');
