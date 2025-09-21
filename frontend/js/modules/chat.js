@@ -5,33 +5,9 @@ window.chat = {
     isOnline: true,
 
     async load() {
-        // Simulate loading chat messages
-        this.messages = [
-            {
-                id: '1',
-                user: 'employe1',
-                username: 'Jean Dupont',
-                message: 'Bonjour équipe ! RDV client Martin reporté à 14h.',
-                timestamp: new Date(Date.now() - 3600000).toISOString(),
-                type: 'message'
-            },
-            {
-                id: '2',
-                user: 'system',
-                username: 'Système',
-                message: 'Nouveau chantier créé : Installation PAC Dupont',
-                timestamp: new Date(Date.now() - 1800000).toISOString(),
-                type: 'system'
-            },
-            {
-                id: '3',
-                user: 'admin',
-                username: 'Admin',
-                message: 'Parfait, merci pour l\'info Jean.',
-                timestamp: new Date(Date.now() - 900000).toISOString(),
-                type: 'message'
-            }
-        ];
+        // No demo messages - start with clean chat
+        this.messages = [];
+        console.log('Chat initialisé - pas de messages de démonstration');
         
         this.render();
     },
