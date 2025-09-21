@@ -285,8 +285,130 @@ window.documents = {
 
     viewDocument(docId) {
         const doc = this.data.find(d => d.id === docId);
-        if (doc) {
-            app.showMessage('Fonctionnalité de visualisation en cours de développement', 'info');
+        if (!doc) {
+            app.showMessage('Document non trouvé', 'error');
+            return;
+        }
+
+        if (!doc.file_data) {
+            app.showMessage('Aucun fichier associé à ce document', 'error');
+            return;
+        }
+
+        this.showDocumentViewer(doc);
+    },
+
+    showDocumentViewer(doc) {
+        const modal = document.createElement('div');
+        modal.className = 'modal modal-fullscreen document-viewer';
+        
+        let viewerContent = '';
+        
+        if (doc.mime_type && doc.mime_type.includes('pdf')) {
+            // PDF Viewer
+            viewerContent = `
+                <div class="pdf-viewer">
+                    <div class="pdf-toolbar">
+                        <button onclick="documents.downloadDocument('${doc.id}')" class="btn-secondary">📥 Télécharger</button>
+                        <button onclick="documents.printDocument('${doc.id}')" class="btn-secondary">🖨️ Imprimer</button>
+                    </div>
+                    <iframe src="${doc.file_data}" width="100%" height="600px" style="border: none; border-radius: 8px;"></iframe>
+                </div>
+            `;
+        } else if (doc.mime_type && doc.mime_type.includes('image')) {
+            // Image Viewer
+            viewerContent = `
+                <div class="image-viewer">
+                    <div class="image-toolbar">
+                        <button onclick="documents.downloadDocument('${doc.id}')" class="btn-secondary">📥 Télécharger</button>
+                        <button onclick="documents.zoomImage(1.2)" class="btn-secondary">🔍 Zoom +</button>
+                        <button onclick="documents.zoomImage(0.8)" class="btn-secondary">🔍 Zoom -</button>
+                    </div>
+                    <div class="image-container" style="text-align: center; padding: 20px; overflow: auto;">
+                        <img id="documentImage" src="${doc.file_data}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);" alt="${doc.nom}">
+                    </div>
+                </div>
+            `;
+        } else {
+            // Generic file viewer
+            viewerContent = `
+                <div class="generic-viewer">
+                    <div class="file-info-display">
+                        <div class="file-icon">📄</div>
+                        <h3>${doc.nom}</h3>
+                        <p>Type: ${doc.type}</p>
+                        <p>Taille: ${doc.taille}</p>
+                        <p>Format: ${doc.mime_type || 'Inconnu'}</p>
+                        ${doc.description ? `<p>Description: ${doc.description}</p>` : ''}
+                    </div>
+                    <div class="file-actions">
+                        <button onclick="documents.downloadDocument('${doc.id}')" class="btn-primary">📥 Télécharger le fichier</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 95vw; max-height: 95vh;">
+                <div class="modal-header">
+                    <h3 class="modal-title">📄 ${doc.nom}</h3>
+                    <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
+                </div>
+                <div class="modal-body" style="padding: 0; overflow: hidden;">
+                    ${viewerContent}
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+    },
+
+    downloadDocument(docId) {
+        const doc = this.data.find(d => d.id === docId);
+        if (!doc || !doc.file_data) {
+            app.showMessage('Impossible de télécharger le document', 'error');
+            return;
+        }
+
+        // Create download link
+        const link = document.createElement('a');
+        link.href = doc.file_data;
+        link.download = doc.file_name || doc.nom;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        app.showMessage('Téléchargement du document démarré', 'success');
+    },
+
+    printDocument(docId) {
+        const doc = this.data.find(d => d.id === docId);
+        if (!doc || !doc.file_data) {
+            app.showMessage('Impossible d\'imprimer le document', 'error');
+            return;
+        }
+
+        // Open in new window for printing
+        const printWindow = window.open(doc.file_data);
+        if (printWindow) {
+            printWindow.addEventListener('load', () => {
+                printWindow.print();
+            });
+        }
+    },
+
+    zoomImage(factor) {
+        const img = document.getElementById('documentImage');
+        if (img) {
+            const currentWidth = img.offsetWidth;
+            img.style.width = (currentWidth * factor) + 'px';
         }
     },
 
