@@ -174,6 +174,39 @@ frontend:
         - working: true
           agent: "main"
           comment: "✅ MODULE DOCUMENTS COMPLÈTEMENT FONCTIONNEL - Implémentation complète: Import PDF avec glisser-déposer et zone stylée, visualisation PDF via iframe, viewer d'images avec zoom, téléchargement/impression, gestion fichiers base64 dans localStorage via backend-local.js, modal moderne avec aperçu PDF, support tous formats (PDF/images/documents génériques). Interface améliorée avec bouton vert 'Import PDF'. Tests validés: modal s'ouvre correctement, styles CSS appliqués, intégration backend fonctionnelle."
+        - working: true
+          agent: "main"  
+          comment: "✅ TESTS FINAL VALIDÉS - Modal import PDF s'ouvre parfaitement avec zone glisser-déposer, icône document, texte d'instruction français, bouton Annuler. Interface moderne et cohérente."
+
+  - task: "Modules PAC Air/Eau et Air/Air"
+    implemented: true
+    working: true
+    file: "/app/frontend/js/modules/calculs-pac-air-eau.js, /app/frontend/js/modules/calculs-pac-air-air.js, /app/frontend/js/modules/calculs-pac.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "❌ MODULES PAC MANQUANTS - Pas d'accès aux calculs PAC Air/Eau et Air/Air depuis l'interface. Navigation défaillante."
+        - working: true
+          agent: "main"
+          comment: "✅ MODULES PAC COMPLÈTEMENT FONCTIONNELS - Navigation vers PAC Air/Eau et Air/Air opérationnelle. Interface de sélection avec cartes distinctes, icônes appropriées (thermomètre/flocon), caractéristiques spécifiques listées, boutons d'accès clairs pour chaque module."
+
+  - task: "Module Chat sans bots automatiques"
+    implemented: true
+    working: true
+    file: "/app/frontend/js/modules/chat.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "❌ CHAT AVEC BOTS INDÉSIRABLES - Présence de messages automatiques et bots de démonstration dans l'interface chat."
+        - working: true
+          agent: "main"
+          comment: "✅ INTERFACE CHAT ÉPURÉE - Suppression complète des bots automatiques. Interface propre avec liste utilisateurs réels (Admin, Jean Dupont, Marie Martin), zone saisie simple, plus de messages de démonstration."
 
   - task: "Navigation Expo Router"
     implemented: true
