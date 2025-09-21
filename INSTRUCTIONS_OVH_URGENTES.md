@@ -43,7 +43,7 @@ nano app.js
 **Chercher la ligne 5 et remplacer :**
 ```javascript
 // ANCIEN (ligne 5) :
-apiUrl: 'https://4bb1929f-96b2-4e76-bb20-025e28511457.preview.emergentagent.com/api',
+apiUrl: 'https://h2eaux-deploy.preview.emergentagent.com/api',
 
 // NOUVEAU :
 apiUrl: this.getApiUrl(),

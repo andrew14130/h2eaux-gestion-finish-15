@@ -40,8 +40,8 @@ MONGO_URL="mongodb://localhost:27017/h2eaux_gestion"
 JWT_SECRET_KEY="h2eaux_secret_key_2024"
 
 # Frontend (.env)
-EXPO_PUBLIC_BACKEND_URL=https://h2eaux-gestion-1.preview.emergentagent.com
-REACT_APP_BACKEND_URL=https://h2eaux-gestion-1.preview.emergentagent.com
+EXPO_PUBLIC_BACKEND_URL=https://h2eaux-deploy.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://h2eaux-deploy.preview.emergentagent.com
 ```
 
 ---
@@ -363,7 +363,7 @@ Collections créées automatiquement :
 ## 🌐 **DÉPLOIEMENT & ACCÈS**
 
 ### **URL Production**
-https://h2eaux-gestion-1.preview.emergentagent.com
+https://h2eaux-deploy.preview.emergentagent.com
 
 ### **Identifiants**
 - **Admin** : `admin` / `admin123`

@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://4bb1929f-96b2-4e76-bb20-025e28511457.preview.emergentagent.com/api"
+BASE_URL = "https://h2eaux-deploy.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 class ComprehensiveTestResults:

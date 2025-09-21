@@ -10,11 +10,11 @@
 ### **1. VÉRIFICATION ÉTAT (2 min)**
 ```bash
 # Vérifier services
-curl https://4bb1929f-96b2-4e76-bb20-025e28511457.preview.emergentagent.com/api/health
+curl https://h2eaux-deploy.preview.emergentagent.com/api/health
 # Attendu: {"status":"ok","message":"H2EAUX Gestion API is running"}
 
 # Tester login  
-curl -X POST https://4bb1929f-96b2-4e76-bb20-025e28511457.preview.emergentagent.com/api/auth/login \
+curl -X POST https://h2eaux-deploy.preview.emergentagent.com/api/auth/login \
 -H "Content-Type: application/json" \
 -d '{"username":"admin","password":"admin123"}'
 # Attendu: JWT token
