@@ -190,7 +190,31 @@ class H2eauxBackendLocal {
                 if (method === 'DELETE') return this.deleteChantier(chantierId);
             }
 
-            // Calculs PAC
+            // Calculs PAC Air/Eau
+            if (path === 'calculs-pac-air-eau') {
+                if (method === 'GET') return this.getCalculsPacAirEau();
+                if (method === 'POST') return this.createCalculPacAirEau(options.body);
+            }
+
+            if (path.startsWith('calculs-pac-air-eau/')) {
+                const calculId = path.split('/')[1];
+                if (method === 'PUT') return this.updateCalculPacAirEau(calculId, options.body);
+                if (method === 'DELETE') return this.deleteCalculPacAirEau(calculId);
+            }
+
+            // Calculs PAC Air/Air
+            if (path === 'calculs-pac-air-air') {
+                if (method === 'GET') return this.getCalculsPacAirAir();
+                if (method === 'POST') return this.createCalculPacAirAir(options.body);
+            }
+
+            if (path.startsWith('calculs-pac-air-air/')) {
+                const calculId = path.split('/')[1];
+                if (method === 'PUT') return this.updateCalculPacAirAir(calculId, options.body);
+                if (method === 'DELETE') return this.deleteCalculPacAirAir(calculId);
+            }
+
+            // Calculs PAC (legacy)
             if (path === 'calculs-pac') {
                 if (method === 'GET') return this.getCalculsPac();
                 if (method === 'POST') return this.createCalculPac(options.body);
