@@ -515,7 +515,105 @@ class H2eauxBackendLocal {
         return this.createResponse({ message: 'Chantier supprimé' });
     }
 
-    // Calculs PAC
+    // Calculs PAC Air/Eau
+    async getCalculsPacAirEau() {
+        const calculs = JSON.parse(localStorage.getItem('h2eaux_calculs_pac_air_eau') || '[]');
+        return this.createResponse(calculs);
+    }
+
+    async createCalculPacAirEau(body) {
+        const data = JSON.parse(body || '{}');
+        const calculs = JSON.parse(localStorage.getItem('h2eaux_calculs_pac_air_eau') || '[]');
+        
+        const newCalcul = {
+            id: 'calcul_air_eau_' + Date.now(),
+            ...data,
+            created_at: new Date().toISOString()
+        };
+        
+        calculs.push(newCalcul);
+        localStorage.setItem('h2eaux_calculs_pac_air_eau', JSON.stringify(calculs));
+        
+        return this.createResponse(newCalcul, 201);
+    }
+
+    async updateCalculPacAirEau(calculId, body) {
+        const data = JSON.parse(body || '{}');
+        const calculs = JSON.parse(localStorage.getItem('h2eaux_calculs_pac_air_eau') || '[]');
+        
+        const calculIndex = calculs.findIndex(c => c.id === calculId);
+        if (calculIndex === -1) {
+            return this.createResponse({ detail: 'Calcul non trouvé' }, 404);
+        }
+        
+        calculs[calculIndex] = { ...calculs[calculIndex], ...data, updated_at: new Date().toISOString() };
+        localStorage.setItem('h2eaux_calculs_pac_air_eau', JSON.stringify(calculs));
+        
+        return this.createResponse(calculs[calculIndex]);
+    }
+
+    async deleteCalculPacAirEau(calculId) {
+        const calculs = JSON.parse(localStorage.getItem('h2eaux_calculs_pac_air_eau') || '[]');
+        const filteredCalculs = calculs.filter(c => c.id !== calculId);
+        
+        if (calculs.length === filteredCalculs.length) {
+            return this.createResponse({ detail: 'Calcul non trouvé' }, 404);
+        }
+        
+        localStorage.setItem('h2eaux_calculs_pac_air_eau', JSON.stringify(filteredCalculs));
+        return this.createResponse({ message: 'Calcul supprimé' });
+    }
+
+    // Calculs PAC Air/Air
+    async getCalculsPacAirAir() {
+        const calculs = JSON.parse(localStorage.getItem('h2eaux_calculs_pac_air_air') || '[]');
+        return this.createResponse(calculs);
+    }
+
+    async createCalculPacAirAir(body) {
+        const data = JSON.parse(body || '{}');
+        const calculs = JSON.parse(localStorage.getItem('h2eaux_calculs_pac_air_air') || '[]');
+        
+        const newCalcul = {
+            id: 'calcul_air_air_' + Date.now(),
+            ...data,
+            created_at: new Date().toISOString()
+        };
+        
+        calculs.push(newCalcul);
+        localStorage.setItem('h2eaux_calculs_pac_air_air', JSON.stringify(calculs));
+        
+        return this.createResponse(newCalcul, 201);
+    }
+
+    async updateCalculPacAirAir(calculId, body) {
+        const data = JSON.parse(body || '{}');
+        const calculs = JSON.parse(localStorage.getItem('h2eaux_calculs_pac_air_air') || '[]');
+        
+        const calculIndex = calculs.findIndex(c => c.id === calculId);
+        if (calculIndex === -1) {
+            return this.createResponse({ detail: 'Calcul non trouvé' }, 404);
+        }
+        
+        calculs[calculIndex] = { ...calculs[calculIndex], ...data, updated_at: new Date().toISOString() };
+        localStorage.setItem('h2eaux_calculs_pac_air_air', JSON.stringify(calculs));
+        
+        return this.createResponse(calculs[calculIndex]);
+    }
+
+    async deleteCalculPacAirAir(calculId) {
+        const calculs = JSON.parse(localStorage.getItem('h2eaux_calculs_pac_air_air') || '[]');
+        const filteredCalculs = calculs.filter(c => c.id !== calculId);
+        
+        if (calculs.length === filteredCalculs.length) {
+            return this.createResponse({ detail: 'Calcul non trouvé' }, 404);
+        }
+        
+        localStorage.setItem('h2eaux_calculs_pac_air_air', JSON.stringify(filteredCalculs));
+        return this.createResponse({ message: 'Calcul supprimé' });
+    }
+
+    // Calculs PAC (legacy)
     async getCalculsPac() {
         const calculs = JSON.parse(localStorage.getItem('h2eaux_calculs_pac') || '[]');
         return this.createResponse(calculs);
