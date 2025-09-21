@@ -1177,10 +1177,169 @@ window.fichesChantier = {
 
     viewDetails(ficheId) {
         const fiche = this.data.find(f => f.id === ficheId);
-        if (!fiche) return;
+        if (!fiche) {
+            app.showMessage('Fiche non trouvée', 'error');
+            return;
+        }
 
-        // Implementation for view details modal
-        app.showMessage('Fonctionnalité de détails en cours de développement', 'info');
+        this.showDetailsModal(fiche);
+    },
+
+    showDetailsModal(fiche) {
+        const modal = document.createElement('div');
+        modal.className = 'modal modal-fullscreen';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">📋 Détails - ${fiche.nom}</h3>
+                    <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="details-container">
+                        <div class="details-section">
+                            <h4>📋 Informations Générales</h4>
+                            <div class="details-grid">
+                                <div class="detail-item">
+                                    <label>Nom de la fiche:</label>
+                                    <span>${fiche.nom || '-'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Client:</label>
+                                    <span>${fiche.client_nom || '-'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Adresse:</label>
+                                    <span>${fiche.adresse || '-'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Statut:</label>
+                                    <span class="status-badge ${fiche.statut || 'planifie'}">${this.getStatusLabel(fiche.statut)}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Date de création:</label>
+                                    <span>${app.formatDate(fiche.created_at)}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Dernière modification:</label>
+                                    <span>${fiche.updated_at ? app.formatDate(fiche.updated_at) : app.formatDate(fiche.created_at)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${this.renderLogementDetails(fiche)}
+                        ${this.renderExistantDetails(fiche)}
+                        ${this.renderBesoinsDetails(fiche)}
+                        ${this.renderTechniqueDetails(fiche)}
+                        ${this.renderPlan2DDetails(fiche)}
+                        ${this.renderNotesDetails(fiche)}
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-primary" onclick="fichesChantier.showEditModal('${fiche.id}')">✏️ Modifier</button>
+                    <button class="btn-secondary" onclick="fichesChantier.exportPDF('${fiche.id}')">📄 Export PDF</button>
+                    <button class="btn-secondary" onclick="this.closest('.modal').remove()">Fermer</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+    },
+
+    renderLogementDetails(fiche) {
+        if (!fiche.surface && !fiche.pieces && !fiche.annee_construction) return '';
+        
+        return `
+            <div class="details-section">
+                <h4>🏠 Logement</h4>
+                <div class="details-grid">
+                    ${fiche.surface ? `<div class="detail-item"><label>Surface:</label><span>${fiche.surface} m²</span></div>` : ''}
+                    ${fiche.pieces ? `<div class="detail-item"><label>Nombre de pièces:</label><span>${fiche.pieces}</span></div>` : ''}
+                    ${fiche.annee_construction ? `<div class="detail-item"><label>Année construction:</label><span>${fiche.annee_construction}</span></div>` : ''}
+                    ${fiche.type_logement ? `<div class="detail-item"><label>Type logement:</label><span>${fiche.type_logement}</span></div>` : ''}
+                    ${fiche.isolation ? `<div class="detail-item"><label>Isolation:</label><span>${fiche.isolation}</span></div>` : ''}
+                    ${fiche.chauffage_existant ? `<div class="detail-item"><label>Chauffage existant:</label><span>${fiche.chauffage_existant}</span></div>` : ''}
+                </div>
+            </div>
+        `;
+    },
+
+    renderExistantDetails(fiche) {
+        if (!fiche.equipements_existants) return '';
+        
+        return `
+            <div class="details-section">
+                <h4>🔧 Équipements Existants</h4>
+                <div class="details-content">
+                    <p>${fiche.equipements_existants}</p>
+                </div>
+            </div>
+        `;
+    },
+
+    renderBesoinsDetails(fiche) {
+        if (!fiche.besoins_client) return '';
+        
+        return `
+            <div class="details-section">
+                <h4>💭 Besoins Client</h4>
+                <div class="details-content">
+                    <p>${fiche.besoins_client}</p>
+                </div>
+            </div>
+        `;
+    },
+
+    renderTechniqueDetails(fiche) {
+        if (!fiche.specifications_techniques) return '';
+        
+        return `
+            <div class="details-section">
+                <h4>⚙️ Spécifications Techniques</h4>
+                <div class="details-content">
+                    <p>${fiche.specifications_techniques}</p>
+                </div>
+            </div>
+        `;
+    },
+
+    renderPlan2DDetails(fiche) {
+        if (!fiche.plan_2d_data) return '';
+        
+        return `
+            <div class="details-section">
+                <h4>📐 Plan 2D</h4>
+                <div class="plan-preview">
+                    <p>Plan 2D disponible - ${fiche.plan_2d_elements ? Object.keys(JSON.parse(fiche.plan_2d_elements)).length : 0} éléments</p>
+                    <button class="btn-secondary" onclick="fichesChantier.showEditModal('${fiche.id}'); setTimeout(() => fichesChantier.switchTab('plan-2d'), 500)">
+                        Voir le plan 2D
+                    </button>
+                </div>
+            </div>
+        `;
+    },
+
+    renderNotesDetails(fiche) {
+        if (!fiche.notes_complementaires) return '';
+        
+        return `
+            <div class="details-section">
+                <h4>📝 Notes Complémentaires</h4>
+                <div class="details-content">
+                    <p>${fiche.notes_complementaires}</p>
+                </div>
+            </div>
+        `;
+    },
+
+    getStatusLabel(status) {
+        const statuses = {
+            'planifie': 'Planifié',
+            'en_cours': 'En cours',
+            'termine': 'Terminé',
+            'suspendu': 'Suspendu',
+            'annule': 'Annulé'
+        };
+        return statuses[status] || 'Planifié';
     },
 
     async exportPDF(ficheId) {
