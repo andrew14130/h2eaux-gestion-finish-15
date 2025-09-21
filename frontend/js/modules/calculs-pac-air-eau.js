@@ -566,10 +566,116 @@ window.calculsPacAirEau = {
         }
     },
 
+    async exportList() {
+        try {
+            // Vérifier que jsPDF est chargé
+            if (typeof window.jsPDF === 'undefined') {
+                app.showMessage('Chargement de la bibliothèque PDF...', 'info');
+                await this.loadJsPDF();
+            }
+
+            const jsPDF = window.jsPDF?.jsPDF || window.jsPDF;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text('Calculs PAC Air/Eau', 20, 20);
+            
+            doc.setFontSize(10);
+            doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')}`, 20, 30);
+            
+            if (this.data.length === 0) {
+                doc.text('Aucun calcul PAC Air/Eau enregistré', 20, 50);
+            } else {
+                // Table data
+                const tableData = this.data.map(calcul => [
+                    calcul.nom,
+                    calcul.client_nom || '-',
+                    calcul.surface + ' m²' || '-',
+                    calcul.puissance_calculee + ' kW' || '-',
+                    app.formatDate(calcul.created_at)
+                ]);
+                
+                doc.autoTable({
+                    head: [['Nom', 'Client', 'Surface', 'Puissance', 'Date']],
+                    body: tableData,
+                    startY: 40,
+                    styles: { fontSize: 9 },
+                    headStyles: { fillColor: [255, 107, 53] }
+                });
+            }
+            
+            doc.save('calculs-pac-air-eau.pdf');
+            app.showMessage('Export PDF généré avec succès', 'success');
+            
+        } catch (error) {
+            console.error('Error exporting PAC Air/Eau:', error);
+            app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
+        }
+    },
+
+    async loadJsPDF() {
+        // Réutilise la fonction de documents.js
+        if (window.documents && window.documents.loadJsPDF) {
+            return await window.documents.loadJsPDF();
+        }
+        
+        return new Promise((resolve, reject) => {
+            if (typeof window.jsPDF !== 'undefined') {
+                resolve();
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Impossible de charger jsPDF'));
+            document.head.appendChild(script);
+        });
+    },
+
+    filter() {
+        const searchTerm = document.getElementById('calculAirEauSearch')?.value.toLowerCase() || '';
+        const filterType = document.getElementById('calculAirEauFilter')?.value || 'all';
+        
+        let filteredData = this.data;
+        
+        // Apply search filter
+        if (searchTerm) {
+            filteredData = filteredData.filter(calcul => 
+                calcul.nom.toLowerCase().includes(searchTerm) ||
+                (calcul.client_nom && calcul.client_nom.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        // Apply type filter
+        if (filterType !== 'all') {
+            filteredData = filteredData.filter(calcul => {
+                if (filterType === 'recent') {
+                    const monthAgo = new Date();
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    return new Date(calcul.created_at) > monthAgo;
+                }
+                return true;
+            });
+        }
+        
+        // Re-render with filtered data
+        const originalData = this.data;
+        this.data = filteredData;
+        this.render();
+        this.data = originalData;
+    },
+
     async exportPDF(calculId) {
         const calcul = this.data.find(c => c.id === calculId);
         if (calcul && window.pdfExport) {
-            await pdfExport.exportCalculPacAirEau(calcul);
+            try {
+                await pdfExport.exportCalculPacAirEau(calcul);
+                app.showMessage('PDF du calcul exporté avec succès', 'success');
+            } catch (error) {
+                console.error('Error exporting individual PDF:', error);
+                app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
+            }
         }
     }
 };
