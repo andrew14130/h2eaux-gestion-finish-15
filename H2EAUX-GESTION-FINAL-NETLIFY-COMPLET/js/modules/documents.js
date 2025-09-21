@@ -496,14 +496,17 @@ window.documents = {
         let viewerContent = '';
         
         if (doc.mime_type && doc.mime_type.includes('pdf')) {
-            // PDF Viewer
+            // PDF Viewer - Convert base64 to blob URL for better display
+            const pdfBlob = this.base64ToBlob(doc.file_data, doc.mime_type);
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            
             viewerContent = `
                 <div class="pdf-viewer">
                     <div class="pdf-toolbar">
                         <button onclick="documents.downloadDocument('${doc.id}')" class="btn-secondary">📥 Télécharger</button>
                         <button onclick="documents.printDocument('${doc.id}')" class="btn-secondary">🖨️ Imprimer</button>
                     </div>
-                    <iframe src="${doc.file_data}" width="100%" height="600px" style="border: none; border-radius: 8px;"></iframe>
+                    <iframe src="${pdfUrl}" width="100%" height="600px" style="border: none; border-radius: 8px;"></iframe>
                 </div>
             `;
         } else if (doc.mime_type && doc.mime_type.includes('image')) {
@@ -601,6 +604,92 @@ window.documents = {
             const currentWidth = img.offsetWidth;
             img.style.width = (currentWidth * factor) + 'px';
         }
+    },
+
+    base64ToBlob(base64Data, contentType) {
+        // Remove data URL prefix if present
+        const base64 = base64Data.split(',')[1] || base64Data;
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: contentType });
+    },
+
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    },
+
+    async exportList() {
+        try {
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text('Liste des Documents', 20, 20);
+            
+            doc.setFontSize(10);
+            doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')}`, 20, 30);
+            
+            // Table data
+            const tableData = this.data.map(document => [
+                document.nom,
+                document.type,
+                document.client_nom || '-',
+                document.taille,
+                app.formatDate(document.created_at)
+            ]);
+            
+            doc.autoTable({
+                head: [['Nom', 'Type', 'Client', 'Taille', 'Date']],
+                body: tableData,
+                startY: 40,
+                styles: { fontSize: 9 },
+                headStyles: { fillColor: [0, 122, 255] }
+            });
+            
+            doc.save('documents-h2eaux.pdf');
+            app.showMessage('Export PDF généré avec succès', 'success');
+            
+        } catch (error) {
+            console.error('Error exporting documents:', error);
+            app.showMessage('Erreur lors de l\'export PDF', 'error');
+        }
+    },
+
+    filter() {
+        const searchTerm = document.getElementById('docSearch').value.toLowerCase();
+        const filterType = document.getElementById('docFilter').value;
+        
+        let filteredData = this.data;
+        
+        // Apply search filter
+        if (searchTerm) {
+            filteredData = filteredData.filter(doc => 
+                doc.nom.toLowerCase().includes(searchTerm) ||
+                doc.type.toLowerCase().includes(searchTerm) ||
+                (doc.client_nom && doc.client_nom.toLowerCase().includes(searchTerm)) ||
+                (doc.tags && doc.tags.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        // Apply type filter
+        if (filterType !== 'all') {
+            filteredData = filteredData.filter(doc => doc.type === filterType);
+        }
+        
+        // Re-render with filtered data
+        const originalData = this.data;
+        this.data = filteredData;
+        this.render();
+        this.data = originalData;  // Restore original data
     },
 
     delete(docId, docNom) {

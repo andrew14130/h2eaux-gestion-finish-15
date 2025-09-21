@@ -197,5 +197,13 @@ window.chat = {
 
         this.messages.push(statusMessage);
         this.render();
+    },
+
+    clearHistory() {
+        if (confirm('Êtes-vous sûr de vouloir supprimer tout l\'historique du chat ?')) {
+            this.messages = [];
+            this.render();
+            app.showMessage('Historique du chat supprimé', 'success');
+        }
     }
 };

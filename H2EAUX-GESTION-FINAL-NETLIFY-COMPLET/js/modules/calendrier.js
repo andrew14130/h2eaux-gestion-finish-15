@@ -419,5 +419,93 @@ window.calendrier = {
             console.error('Error saving RDV:', error);
             app.showMessage('Erreur lors de la sauvegarde: ' + error.message, 'error');
         }
+    },
+
+    // Alias for showAddRdvModal to match HTML interface
+    showAddModal() {
+        this.showAddRdvModal();
+    },
+
+    async exportCalendar() {
+        try {
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text('Planning H2EAUX GESTION', 20, 20);
+            
+            doc.setFontSize(10);
+            const monthName = this.currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+            doc.text(`Planning du mois : ${monthName}`, 20, 30);
+            doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')}`, 20, 36);
+            
+            // Filter RDV for current month
+            const currentMonth = this.currentDate.getMonth();
+            const currentYear = this.currentDate.getFullYear();
+            const monthRdv = this.rdvData.filter(rdv => 
+                rdv.date.getMonth() === currentMonth && 
+                rdv.date.getFullYear() === currentYear
+            ).sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            if (monthRdv.length === 0) {
+                doc.text('Aucun rendez-vous planifié ce mois-ci', 20, 50);
+            } else {
+                // Table data
+                const tableData = monthRdv.map(rdv => [
+                    rdv.date.toLocaleDateString('fr-FR'),
+                    rdv.time,
+                    rdv.title,
+                    rdv.client || '-',
+                    this.getTypeLabel(rdv.type),
+                    this.getStatusLabel(rdv.status),
+                    rdv.duration + ' min'
+                ]);
+                
+                doc.autoTable({
+                    head: [['Date', 'Heure', 'Titre', 'Client', 'Type', 'Statut', 'Durée']],
+                    body: tableData,
+                    startY: 45,
+                    styles: { fontSize: 8 },
+                    headStyles: { fillColor: [0, 122, 255] },
+                    columnStyles: {
+                        0: { cellWidth: 25 },
+                        1: { cellWidth: 20 },
+                        2: { cellWidth: 40 },
+                        3: { cellWidth: 35 },
+                        4: { cellWidth: 25 },
+                        5: { cellWidth: 25 },
+                        6: { cellWidth: 20 }
+                    }
+                });
+            }
+            
+            doc.save(`planning-h2eaux-${monthName.replace(' ', '-')}.pdf`);
+            app.showMessage('Planning exporté avec succès', 'success');
+            
+        } catch (error) {
+            console.error('Error exporting calendar:', error);
+            app.showMessage('Erreur lors de l\'export PDF', 'error');
+        }
+    },
+
+    getTypeLabel(type) {
+        const types = {
+            'visite_technique': 'Visite technique',
+            'releve': 'Relevé',
+            'installation': 'Installation',
+            'maintenance': 'Maintenance',
+            'autre': 'Autre'
+        };
+        return types[type] || type;
+    },
+
+    getStatusLabel(status) {
+        const statuses = {
+            'planifie': 'Planifié',
+            'confirme': 'Confirmé',
+            'en_cours': 'En cours',
+            'termine': 'Terminé',
+            'annule': 'Annulé'
+        };
+        return statuses[status] || status;
     }
 };
