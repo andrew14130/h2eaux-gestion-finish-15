@@ -83,7 +83,200 @@ window.documents = {
     },
 
     showAddModal() {
-        this.showDocumentModal('Nouveau Document', null);
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+
+        modal.innerHTML = `
+            <div class="modal-overlay">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h3>📄 Nouveau Document</h3>
+                        <button class="modal-close" onclick="this.closest('.modal').remove()">×</button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <form id="documentForm">
+                            <div class="form-group">
+                                <label for="docName">Nom du document *</label>
+                                <input type="text" id="docName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="docType">Type de document *</label>
+                                <select id="docType" required>
+                                    <option value="">Sélectionner un type</option>
+                                    <option value="facture">Facture</option>
+                                    <option value="devis">Devis</option>
+                                    <option value="contrat">Contrat</option>
+                                    <option value="fiche_technique">Fiche technique</option>
+                                    <option value="rapport">Rapport</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="docClient">Client associé</label>
+                                <select id="docClient">
+                                    <option value="">Aucun client</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="docDescription">Description</label>
+                                <textarea id="docDescription" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="docFile">Fichier PDF</label>
+                                <input type="file" id="docFile" accept=".pdf,application/pdf">
+                                <small class="form-help">Taille max: 10MB - Format: PDF uniquement</small>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="this.closest('.modal').remove()">Annuler</button>
+                        <button type="button" class="btn-primary" onclick="documents.saveDocument()">Enregistrer</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modals').appendChild(modal);
+
+        // Charger la liste des clients
+        this.loadClientsForDocument();
+    },
+
+    async loadClientsForDocument() {
+        try {
+            const response = await app.apiCall('/clients');
+            const clients = await response.json();
+            
+            const clientSelect = document.getElementById('docClient');
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.prenom} ${client.nom}`;
+                clientSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading clients:', error);
+        }
+    },
+
+    async saveDocument() {
+        const name = document.getElementById('docName').value.trim();
+        const type = document.getElementById('docType').value;
+        const clientId = document.getElementById('docClient').value;
+        const description = document.getElementById('docDescription').value.trim();
+        const fileInput = document.getElementById('docFile');
+
+        if (!name || !type) {
+            app.showMessage('Veuillez remplir tous les champs obligatoires', 'error');
+            return;
+        }
+
+        let fileData = null;
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            
+            // Vérifier la taille (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                app.showMessage('Le fichier est trop volumineux (max 10MB)', 'error');
+                return;
+            }
+            
+            // Vérifier le type
+            if (file.type !== 'application/pdf') {
+                app.showMessage('Seuls les fichiers PDF sont acceptés', 'error');
+                return;
+            }
+
+            // Convertir en base64
+            try {
+                fileData = await this.fileToBase64(file);
+            } catch (error) {
+                app.showMessage('Erreur lors du traitement du fichier', 'error');
+                return;
+            }
+        }
+
+        const documentData = {
+            nom: name,
+            type: type,
+            client_id: clientId || null,
+            description: description,
+            file_data: fileData,
+            file_name: fileInput.files.length > 0 ? fileInput.files[0].name : null,
+            file_size: fileInput.files.length > 0 ? fileInput.files[0].size : null
+        };
+
+        try {
+            await app.apiCall('/documents', {
+                method: 'POST',
+                body: JSON.stringify(documentData)
+            });
+
+            app.showMessage('Document ajouté avec succès', 'success');
+            document.querySelector('.modal').remove();
+            await this.render();
+        } catch (error) {
+            console.error('Error saving document:', error);
+            app.showMessage('Erreur lors de l\'enregistrement', 'error');
+        }
+    },
+
+    fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    },
+
+    viewDocument(documentId) {
+        const documents = JSON.parse(localStorage.getItem('h2eaux_documents') || '[]');
+        const document = documents.find(d => d.id === documentId);
+        
+        if (!document || !document.file_data) {
+            app.showMessage('Document non trouvé ou aucun fichier associé', 'error');
+            return;
+        }
+
+        // Ouvrir le PDF dans un nouvel onglet
+        const newWindow = window.open();
+        newWindow.document.write(`
+            <html>
+                <head>
+                    <title>${document.nom}</title>
+                    <style>
+                        body { margin: 0; padding: 0; }
+                        iframe { width: 100%; height: 100vh; border: none; }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="${document.file_data}"></iframe>
+                </body>
+            </html>
+        `);
+    },
+
+    downloadDocument(documentId) {
+        const documents = JSON.parse(localStorage.getItem('h2eaux_documents') || '[]');
+        const document = documents.find(d => d.id === documentId);
+        
+        if (!document || !document.file_data) {
+            app.showMessage('Document non trouvé ou aucun fichier associé', 'error');
+            return;
+        }
+
+        // Créer un lien de téléchargement
+        const link = document.createElement('a');
+        link.href = document.file_data;
+        link.download = document.file_name || `${document.nom}.pdf`;
+        link.click();
     },
 
     showEditModal(docId) {
