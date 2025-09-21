@@ -114,21 +114,24 @@ window.settings = {
     },
 
     updateLogosInApp() {
-        // Update all logo elements in the app
+        // Update all logo elements in the app with size control
         const logoElements = [
-            'loadingLogo',
-            'loginLogo', 
-            'headerLogo',
-            'clientsLogo',
-            'chantiersLogo',
-            'calculsPacLogo'
+            { id: 'loadingLogo', maxWidth: '80px', maxHeight: '80px' },
+            { id: 'loginLogo', maxWidth: '120px', maxHeight: '80px' },
+            { id: 'headerLogo', maxWidth: '40px', maxHeight: '40px' },
+            { id: 'logoPreview', maxWidth: '100px', maxHeight: '100px' }
         ];
 
-        logoElements.forEach(id => {
-            const element = document.getElementById(id);
+        logoElements.forEach(config => {
+            const element = document.getElementById(config.id);
             if (element) {
                 element.src = this.data.company.logo;
                 element.style.display = 'block';
+                element.style.maxWidth = config.maxWidth;
+                element.style.maxHeight = config.maxHeight;
+                element.style.objectFit = 'contain';
+                element.style.width = 'auto';
+                element.style.height = 'auto';
             }
         });
 
