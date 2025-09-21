@@ -629,7 +629,7 @@ window.documents = {
                 await this.loadJsPDF();
             }
 
-            const { jsPDF } = window.jsPDF;
+            const jsPDF = window.jsPDF?.jsPDF || window.jsPDF;
             const doc = new jsPDF();
             
             doc.setFontSize(18);
