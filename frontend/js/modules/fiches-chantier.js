@@ -1344,8 +1344,21 @@ window.fichesChantier = {
 
     async exportPDF(ficheId) {
         const fiche = this.data.find(f => f.id === ficheId);
-        if (fiche && window.pdfExport) {
-            await pdfExport.exportFicheChantier(fiche);
+        if (!fiche) {
+            app.showMessage('Fiche non trouvée', 'error');
+            return;
+        }
+
+        try {
+            if (window.pdfExport) {
+                await pdfExport.exportFicheChantier(fiche);
+                app.showMessage('PDF exporté avec succès !', 'success');
+            } else {
+                app.showMessage('Module d\'export PDF non disponible', 'error');
+            }
+        } catch (error) {
+            console.error('Erreur export PDF:', error);
+            app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
         }
     },
 
