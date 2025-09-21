@@ -304,7 +304,7 @@ class H2EAUXGestion {
         spinner.classList.toggle('hidden', !loading);
     }
 
-    showModule(moduleId) {
+    async showModule(moduleId) {
         // Check permissions
         if (moduleId === 'parametres' && 
             (!this.state.currentUser || !this.state.currentUser.permissions.parametres)) {
