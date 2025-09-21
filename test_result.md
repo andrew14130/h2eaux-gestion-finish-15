@@ -130,6 +130,18 @@ frontend:
           agent: "main"
           comment: "✅ INTERFACE LOGIN FONCTIONNELLE - Design professionnel avec logo H2EAUX GESTION, champs nom d'utilisateur/mot de passe, bouton Se connecter, identifiants de test affichés. Store d'authentification Zustand corrigé et opérationnel."
 
+  - task: "Correction erreur 404 fiches chantier"
+    implemented: false
+    working: false
+    file: "/app/frontend/js/backend-local.js, /app/frontend/js/modules/fiches-chantier.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "❌ PROBLÈME IDENTIFIÉ - Erreur HTTP 404 lors de l'enregistrement des fiches de chantier. Backend local manquant et endpoints incorrects (/fiches-sdb vs /fiches-chantier)."
+
   - task: "Navigation Expo Router"
     implemented: true
     working: true
