@@ -93,6 +93,12 @@ class H2eauxBackendLocal {
         if (!localStorage.getItem('h2eaux_calculs_pac')) {
             localStorage.setItem('h2eaux_calculs_pac', JSON.stringify([]));
         }
+        if (!localStorage.getItem('h2eaux_calculs_pac_air_eau')) {
+            localStorage.setItem('h2eaux_calculs_pac_air_eau', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('h2eaux_calculs_pac_air_air')) {
+            localStorage.setItem('h2eaux_calculs_pac_air_air', JSON.stringify([]));
+        }
         if (!localStorage.getItem('h2eaux_fiches_chantier')) {
             localStorage.setItem('h2eaux_fiches_chantier', JSON.stringify([]));
         }
