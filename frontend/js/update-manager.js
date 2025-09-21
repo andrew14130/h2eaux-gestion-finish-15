@@ -1,7 +1,7 @@
 // ===== AUTO-UPDATE MANAGER =====
 class UpdateManager {
     constructor() {
-        this.currentVersion = '3.0.0';
+        this.currentVersion = '3.1.0';
         this.checkInterval = 3600000; // 1 hour
         this.updateChannel = 'stable'; // stable, beta, dev
         this.config = {
