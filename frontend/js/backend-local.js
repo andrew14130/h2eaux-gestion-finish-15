@@ -142,6 +142,10 @@ class H2eauxBackendLocal {
             if (path === 'auth/login') {
                 return this.handleLogin(options.body);
             }
+            
+            if (path === 'auth/register') {
+                return this.createUser(options.body);
+            }
 
             // Users management
             if (path === 'users') {
