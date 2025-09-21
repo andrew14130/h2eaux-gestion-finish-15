@@ -852,3 +852,106 @@
 .status-indicator.offline {
     background: var(--text-secondary);
 }
+
+/* ===== DETAILS VIEW STYLES ===== */
+.details-container {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 1rem 0;
+}
+
+.details-section {
+    margin-bottom: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.details-section h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary);
+    font-size: 1.1rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.detail-item span {
+    color: var(--text);
+    font-size: 1rem;
+}
+
+.details-content {
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.details-content p {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.planifie {
+    background: #E3F2FD;
+    color: #1976D2;
+}
+
+.status-badge.en_cours {
+    background: #FFF3E0;
+    color: #F57C00;
+}
+
+.status-badge.termine {
+    background: #E8F5E8;
+    color: #388E3C;
+}
+
+.status-badge.suspendu {
+    background: #FFF8E1;
+    color: #F9A825;
+}
+
+.status-badge.annule {
+    background: #FFEBEE;
+    color: #D32F2F;
+}
+
+.plan-preview {
+    text-align: center;
+    padding: 1rem;
+    background: var(--background);
+    border-radius: 8px;
+    border: 2px dashed var(--border);
+}
+
+.plan-preview p {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+}
