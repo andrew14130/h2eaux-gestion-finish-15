@@ -360,8 +360,8 @@ class FicheChantierComplete(BaseModel):
 ## 🌐 **ÉTAT SERVICES ACTUELS**
 
 **URLs actives :**
-- Frontend : https://h2eaux-pwa.preview.emergentagent.com
-- API : https://h2eaux-pwa.preview.emergentagent.com/api
+- Frontend : https://h2eaux-pwa-1.preview.emergentagent.com
+- API : https://h2eaux-pwa-1.preview.emergentagent.com/api
 
 **Services status :**
 - Backend (port 8001) ✅ RUNNING  

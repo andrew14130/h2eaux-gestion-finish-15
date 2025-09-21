@@ -24,7 +24,7 @@
 ### **✅ CE QUI FONCTIONNE PARFAITEMENT**
 
 #### **Backend FastAPI (100% Opérationnel)**
-- **URL API :** https://h2eaux-pwa.preview.emergentagent.com/api
+- **URL API :** https://h2eaux-pwa-1.preview.emergentagent.com/api
 - **Fichier :** `/app/backend/server.py` (1051+ lignes)
 - **19 endpoints** sécurisés avec JWT
 - **Modèles Pydantic** complets et validés
@@ -248,8 +248,8 @@
 
 ## 🌐 **URLS DE TEST ACTUELLES**
 
-**Frontend :** https://h2eaux-pwa.preview.emergentagent.com
-**API :** https://h2eaux-pwa.preview.emergentagent.com/api
+**Frontend :** https://h2eaux-pwa-1.preview.emergentagent.com
+**API :** https://h2eaux-pwa-1.preview.emergentagent.com/api
 **Login :** admin/admin123 ou employe1/employe123
 
 **Tests backend validés :** 14/14 réussis
