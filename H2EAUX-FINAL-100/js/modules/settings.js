@@ -310,16 +310,19 @@ window.settings = {
     async saveUser(userId = null) {
         const username = document.getElementById('userUsername').value.trim();
         const password = document.getElementById('userPassword')?.value;
+        const nom = document.getElementById('userNom')?.value || '';
+        const prenom = document.getElementById('userPrenom')?.value || '';
+        const email = document.getElementById('userEmail')?.value || '';
         const role = document.getElementById('userRole').value;
         
         const permissions = {
-            clients: document.getElementById('perm_clients').checked,
-            chantiers: document.getElementById('perm_chantiers').checked,
-            documents: document.getElementById('perm_documents').checked,
-            calculs_pac: document.getElementById('perm_calculs_pac').checked,
-            catalogues: document.getElementById('perm_catalogues').checked,
-            chat: document.getElementById('perm_chat').checked,
-            parametres: document.getElementById('perm_parametres').checked
+            clients: document.getElementById('perm_clients')?.checked || false,
+            chantiers: document.getElementById('perm_chantiers')?.checked || false,
+            documents: document.getElementById('perm_documents')?.checked || false,
+            calculs_pac: document.getElementById('perm_calculs_pac')?.checked || false,
+            catalogues: document.getElementById('perm_catalogues')?.checked || false,
+            chat: document.getElementById('perm_chat')?.checked || false,
+            parametres: document.getElementById('perm_parametres')?.checked || false
         };
 
         if (!username) {
@@ -327,8 +330,8 @@ window.settings = {
             return;
         }
 
-        const userData = { username, role, permissions };
-        if (!userId && password) {
+        const userData = { username, nom, prenom, email, role, permissions };
+        if (password) {
             userData.password = password;
         }
 
@@ -336,7 +339,7 @@ window.settings = {
             if (userId) {
                 await app.apiCall(`/users/${userId}`, {
                     method: 'PUT',
-                    body: JSON.stringify({ role, permissions })
+                    body: JSON.stringify(userData)
                 });
                 app.showMessage('Utilisateur modifié avec succès', 'success');
             } else {
