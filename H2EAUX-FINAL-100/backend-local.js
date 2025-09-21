@@ -113,6 +113,10 @@ class H2eauxBackendLocal {
                 return this.handleLogin(options.body);
             }
 
+            if (path === 'auth/register') {
+                return this.handleRegister(options.body);
+            }
+
             // Users management
             if (path === 'users') {
                 if (method === 'GET') return this.getUsers();
@@ -123,6 +127,12 @@ class H2eauxBackendLocal {
                 const userId = path.split('/')[1];
                 if (method === 'PUT') return this.updateUser(userId, options.body);
                 if (method === 'DELETE') return this.deleteUser(userId);
+            }
+
+            // Password change
+            if (path.startsWith('users/') && path.endsWith('/password')) {
+                const userId = path.split('/')[1];
+                return this.changePassword(userId, options.body);
             }
 
             // Clients
