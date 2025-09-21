@@ -333,19 +333,41 @@ class H2EAUXGestion {
         }
     }
 
-    loadModuleData(moduleId) {
-        switch (moduleId) {
+    async loadModuleData(moduleId) {
+        // Load module data
+        switch(moduleId) {
             case 'clients':
-                if (window.clients) clients.load();
+                if (window.clients) await clients.load();
                 break;
             case 'chantiers':
-                if (window.chantiers) chantiers.load();
+                if (window.chantiers) await chantiers.load();
                 break;
             case 'calculs-pac':
-                if (window.calculsPac) calculsPac.load();
+                if (window.calculsPac) await calculsPac.load();
+                break;
+            case 'calculs-pac-air-eau':
+                if (window.calculsPacAirEau) await calculsPacAirEau.load();
+                break;
+            case 'calculs-pac-air-air':
+                if (window.calculsPacAirAir) await calculsPacAirAir.load();
+                break;
+            case 'documents':
+                if (window.documents) await documents.load();
+                break;
+            case 'fiches-chantier':
+                if (window.fichesChantier) await fichesChantier.load();
+                break;
+            case 'calendrier-rdv':
+                if (window.calendrier) await calendrier.load();
+                break;
+            case 'meg-integration':
+                if (window.meg) await meg.load();
+                break;
+            case 'chat':
+                if (window.chat) await chat.load();
                 break;
             case 'parametres':
-                if (window.settings) settings.load();
+                if (window.settings) await settings.load();
                 break;
         }
     }
