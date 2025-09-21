@@ -496,14 +496,17 @@ window.documents = {
         let viewerContent = '';
         
         if (doc.mime_type && doc.mime_type.includes('pdf')) {
-            // PDF Viewer
+            // PDF Viewer - Convert base64 to blob URL for better display
+            const pdfBlob = this.base64ToBlob(doc.file_data, doc.mime_type);
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            
             viewerContent = `
                 <div class="pdf-viewer">
                     <div class="pdf-toolbar">
                         <button onclick="documents.downloadDocument('${doc.id}')" class="btn-secondary">📥 Télécharger</button>
                         <button onclick="documents.printDocument('${doc.id}')" class="btn-secondary">🖨️ Imprimer</button>
                     </div>
-                    <iframe src="${doc.file_data}" width="100%" height="600px" style="border: none; border-radius: 8px;"></iframe>
+                    <iframe src="${pdfUrl}" width="100%" height="600px" style="border: none; border-radius: 8px;"></iframe>
                 </div>
             `;
         } else if (doc.mime_type && doc.mime_type.includes('image')) {
