@@ -24,6 +24,22 @@
   ],
   
   "changelog": {
+    "3.1.0": {
+      "date": "2025-01-21",
+      "type": "major",
+      "changes": [
+        "🌡️ Navigation PAC groupée avec dropdown moderne",
+        "🔒 Interface de connexion professionnelle (identifiants cachés)",
+        "📄 Import/Export PDF entièrement fonctionnel",
+        "📋 Détails fiches chantier complets avec modal interactif",
+        "🖼️ Contrôle strict logo entreprise (résolu superposition)",
+        "❌ Correction erreur HTTP 404 fiches chantier",
+        "⚡ Performance améliorée et compatibilité versions",
+        "📱 PWA installable optimisée mobile/tablette",
+        "🔄 Système de mise à jour automatique intégré",
+        "✅ Application 100% fonctionnelle et professionnelle"
+      ]
+    },
     "3.0.0": {
       "date": "2025-01-15",
       "type": "major",
