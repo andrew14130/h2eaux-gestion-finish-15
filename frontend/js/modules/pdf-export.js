@@ -522,7 +522,13 @@ window.pdfExport = {
             
         } catch (error) {
             console.error('Error exporting fiche chantier to PDF:', error);
-            throw error;
+            
+            // Afficher un message d'erreur plus spécifique
+            if (error.message.includes('jsPDF')) {
+                throw new Error('Bibliothèque PDF non chargée. Veuillez recharger la page.');
+            } else {
+                throw new Error('Erreur lors de la génération du PDF: ' + error.message);
+            }
         }
     },
 
