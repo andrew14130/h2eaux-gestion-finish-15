@@ -110,12 +110,7 @@ window.chat = {
         input.value = '';
         this.render();
 
-        // Simulate response after 2-3 seconds
-        if (Math.random() > 0.3) {
-            setTimeout(() => {
-                this.simulateResponse();
-            }, 2000 + Math.random() * 3000);
-        }
+        // Pas de simulation de réponse - chat réel uniquement
     },
 
     sendQuickMessage(emoji) {
