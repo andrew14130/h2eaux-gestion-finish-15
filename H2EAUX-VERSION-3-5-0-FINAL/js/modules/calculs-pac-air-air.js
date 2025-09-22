@@ -444,12 +444,12 @@ window.calculsPacAirAir = {
         const unites = document.querySelectorAll('.unite-interieure');
         
         if (surface <= 0) {
-            app.showMessage('Veuillez d\'abord saisir la surface totale', 'error');
+            window.app.showMessage('Veuillez d\'abord saisir la surface totale', 'error');
             return;
         }
 
         if (unites.length === 0) {
-            app.showMessage('Ajoutez au moins une unité intérieure', 'error');
+            window.app.showMessage('Ajoutez au moins une unité intérieure', 'error');
             return;
         }
 
@@ -468,7 +468,7 @@ window.calculsPacAirAir = {
             }
         });
 
-        app.showMessage('Répartition automatique effectuée', 'success');
+        window.app.showMessage('Répartition automatique effectuée', 'success');
     },
 
     calculatePower() {
@@ -484,7 +484,7 @@ window.calculsPacAirAir = {
         const simultaneite = parseFloat(document.getElementById('calculSimultaneite').value) || 0.8;
 
         if (surface <= 0) {
-            app.showMessage('Veuillez saisir une surface valide', 'error');
+            window.app.showMessage('Veuillez saisir une surface valide', 'error');
             return;
         }
 
@@ -685,20 +685,20 @@ window.calculsPacAirAir = {
                     method: 'PUT',
                     body: JSON.stringify(formData)
                 });
-                app.showMessage('Calcul PAC Air/Air modifié avec succès', 'success');
+                window.app.showMessage('Calcul PAC Air/Air modifié avec succès', 'success');
             } else {
                 await window.app.apiCall('/calculs-pac-air-air', {
                     method: 'POST',
                     body: JSON.stringify(formData)
                 });
-                app.showMessage('Calcul PAC Air/Air créé avec succès', 'success');
+                window.app.showMessage('Calcul PAC Air/Air créé avec succès', 'success');
             }
 
             document.querySelector('.modal').remove();
             await this.load();
         } catch (error) {
             console.error('Error saving calcul PAC Air/Air:', error);
-            app.showMessage('Erreur lors de la sauvegarde: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de la sauvegarde: ' + error.message, 'error');
         }
     },
 
@@ -746,14 +746,14 @@ window.calculsPacAirAir = {
 
     validateFormData(formData) {
         if (!formData.nom) {
-            app.showMessage('Le nom du projet est obligatoire', 'error');
+            window.app.showMessage('Le nom du projet est obligatoire', 'error');
             this.switchTab('general');
             document.getElementById('calculNom').focus();
             return false;
         }
 
         if (formData.surface <= 0) {
-            app.showMessage('La surface doit être supérieure à 0', 'error');
+            window.app.showMessage('La surface doit être supérieure à 0', 'error');
             this.switchTab('logement');
             document.getElementById('calculSurface').focus();
             return false;
@@ -761,7 +761,7 @@ window.calculsPacAirAir = {
 
         const unites = JSON.parse(formData.unites_interieures);
         if (unites.length === 0) {
-            app.showMessage('Ajoutez au moins une unité intérieure', 'error');
+            window.app.showMessage('Ajoutez au moins une unité intérieure', 'error');
             this.switchTab('unites');
             return false;
         }
@@ -776,11 +776,11 @@ window.calculsPacAirAir = {
 
         try {
             await window.app.apiCall(`/calculs-pac-air-air/${calculId}`, { method: 'DELETE' });
-            app.showMessage('Calcul PAC Air/Air supprimé avec succès', 'success');
+            window.app.showMessage('Calcul PAC Air/Air supprimé avec succès', 'success');
             await this.load();
         } catch (error) {
             console.error('Error deleting calcul PAC Air/Air:', error);
-            app.showMessage('Erreur lors de la suppression: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de la suppression: ' + error.message, 'error');
         }
     },
 
@@ -796,7 +796,7 @@ window.calculsPacAirAir = {
         try {
             // Vérifier que jsPDF est chargé
             if (typeof window.jsPDF === 'undefined') {
-                app.showMessage('Chargement de la bibliothèque PDF...', 'info');
+                window.app.showMessage('Chargement de la bibliothèque PDF...', 'info');
                 await this.loadJsPDF();
             }
 
@@ -831,11 +831,11 @@ window.calculsPacAirAir = {
             }
             
             doc.save('calculs-pac-air-air.pdf');
-            app.showMessage('Export PDF généré avec succès', 'success');
+            window.app.showMessage('Export PDF généré avec succès', 'success');
             
         } catch (error) {
             console.error('Error exporting PAC Air/Air:', error);
-            app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
         }
     },
 
@@ -899,10 +899,10 @@ window.calculsPacAirAir = {
         if (calcul && window.pdfExport) {
             try {
                 await pdfExport.exportCalculPacAirAir(calcul);
-                app.showMessage('PDF du calcul exporté avec succès', 'success');
+                window.app.showMessage('PDF du calcul exporté avec succès', 'success');
             } catch (error) {
                 console.error('Error exporting individual PDF:', error);
-                app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
+                window.app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
             }
         }
     }
