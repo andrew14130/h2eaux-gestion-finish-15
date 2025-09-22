@@ -342,7 +342,7 @@ window.calculsPacAirEau = {
         const puissanceEcs = parseFloat(document.getElementById('calculPuissanceEcs').value) || 2;
 
         if (surface <= 0) {
-            app.showMessage('Veuillez saisir une surface valide', 'error');
+            window.app.showMessage('Veuillez saisir une surface valide', 'error');
             return;
         }
 
@@ -475,20 +475,20 @@ window.calculsPacAirEau = {
                     method: 'PUT',
                     body: JSON.stringify(formData)
                 });
-                app.showMessage('Calcul PAC Air/Eau modifié avec succès', 'success');
+                window.app.showMessage('Calcul PAC Air/Eau modifié avec succès', 'success');
             } else {
                 await window.app.apiCall('/calculs-pac-air-eau', {
                     method: 'POST',
                     body: JSON.stringify(formData)
                 });
-                app.showMessage('Calcul PAC Air/Eau créé avec succès', 'success');
+                window.app.showMessage('Calcul PAC Air/Eau créé avec succès', 'success');
             }
 
             document.querySelector('.modal').remove();
             await this.load();
         } catch (error) {
             console.error('Error saving calcul PAC Air/Eau:', error);
-            app.showMessage('Erreur lors de la sauvegarde: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de la sauvegarde: ' + error.message, 'error');
         }
     },
 
@@ -527,14 +527,14 @@ window.calculsPacAirEau = {
 
     validateFormData(formData) {
         if (!formData.nom) {
-            app.showMessage('Le nom du projet est obligatoire', 'error');
+            window.app.showMessage('Le nom du projet est obligatoire', 'error');
             this.switchTab('general');
             document.getElementById('calculNom').focus();
             return false;
         }
 
         if (formData.surface <= 0) {
-            app.showMessage('La surface doit être supérieure à 0', 'error');
+            window.app.showMessage('La surface doit être supérieure à 0', 'error');
             this.switchTab('logement');
             document.getElementById('calculSurface').focus();
             return false;
@@ -550,11 +550,11 @@ window.calculsPacAirEau = {
 
         try {
             await window.app.apiCall(`/calculs-pac-air-eau/${calculId}`, { method: 'DELETE' });
-            app.showMessage('Calcul PAC Air/Eau supprimé avec succès', 'success');
+            window.app.showMessage('Calcul PAC Air/Eau supprimé avec succès', 'success');
             await this.load();
         } catch (error) {
             console.error('Error deleting calcul PAC Air/Eau:', error);
-            app.showMessage('Erreur lors de la suppression: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de la suppression: ' + error.message, 'error');
         }
     },
 
@@ -570,7 +570,7 @@ window.calculsPacAirEau = {
         try {
             // Vérifier que jsPDF est chargé
             if (typeof window.jsPDF === 'undefined') {
-                app.showMessage('Chargement de la bibliothèque PDF...', 'info');
+                window.app.showMessage('Chargement de la bibliothèque PDF...', 'info');
                 await this.loadJsPDF();
             }
 
@@ -605,11 +605,11 @@ window.calculsPacAirEau = {
             }
             
             doc.save('calculs-pac-air-eau.pdf');
-            app.showMessage('Export PDF généré avec succès', 'success');
+            window.app.showMessage('Export PDF généré avec succès', 'success');
             
         } catch (error) {
             console.error('Error exporting PAC Air/Eau:', error);
-            app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
         }
     },
 
@@ -671,10 +671,10 @@ window.calculsPacAirEau = {
         if (calcul && window.pdfExport) {
             try {
                 await pdfExport.exportCalculPacAirEau(calcul);
-                app.showMessage('PDF du calcul exporté avec succès', 'success');
+                window.app.showMessage('PDF du calcul exporté avec succès', 'success');
             } catch (error) {
                 console.error('Error exporting individual PDF:', error);
-                app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
+                window.app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
             }
         }
     }
