@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H2EAUX Gestion - Mode Hors Ligne</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .offline-container {
+            max-width: 500px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .retry-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .retry-btn:hover {
+            background: #e55a2b;
+        }
+        
+        .features-list {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .features-list li {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📡</div>
+        <h1>Mode Hors Ligne</h1>
+        <p>Vous n'êtes pas connecté à Internet, mais H2EAUX Gestion continue de fonctionner !</p>
+        
+        <ul class="features-list">
+            <li>✅ Consulter vos données</li>
+            <li>✅ Créer de nouveaux éléments</li>
+            <li>✅ Faire des calculs PAC</li>
+            <li>✅ Export PDF</li>
+        </ul>
+        
+        <p><small>Vos modifications seront synchronisées dès le retour de la connexion.</small></p>
+        
+        <button class="retry-btn" onclick="window.location.reload()">
+            🔄 Réessayer la connexion
+        </button>
+    </div>
+</body>
+</html>

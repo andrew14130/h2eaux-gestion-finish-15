@@ -1,0 +1,45 @@
+{
+  "version": "3.3.0",
+  "buildDate": "2025-01-22",
+  "buildNumber": 330,
+  "environment": "production",
+  "minimumVersion": "2.0.0",
+  "criticalUpdate": false,
+  "updateChannel": "stable",
+  
+  "features": [
+    "Navigation PAC Air/Eau et Air/Air complètement fonctionnelle",
+    "Import/Export PDF opérationnel avec jsPDF intégré",
+    "Interface chat épurée sans bots automatiques",
+    "Application PWA complète avec mode hors ligne",
+    "Synchronisation automatique en arrière-plan",
+    "Gestion clients avec export PDF optimisé",
+    "Calculs PAC professionnels avec recommandations",
+    "Système de paramètres et gestion utilisateurs",
+    "Mode hors ligne intelligent avec queue d'actions",
+    "Interface optimisée tablette et mobile"
+  ],
+  
+  "changelog": {
+    "3.2.0": {
+      "date": "2025-01-21",
+      "type": "major",
+      "changes": [
+        "🔧 CORRECTIONS FINALES APPLIQUÉES",
+        "🌡️ Navigation PAC Air/Eau et Air/Air entièrement fonctionnelle",
+        "📄 Import/Export PDF complètement opérationnel",
+        "💬 Interface Chat épurée sans bots automatiques",
+        "⚡ Référencement window.app corrigé pour navigation",
+        "📋 Tous les modules PAC avec calculs professionnels",
+        "✅ Application 100% fonctionnelle et testée"
+      ]
+    }
+  },
+  
+  "fixes": {
+    "navigation_pac": "Correction window.app.showModule() pour navigation PAC",
+    "pdf_functionality": "Fonctionnalité PDF import/export entièrement opérationnelle",
+    "chat_interface": "Suppression complète des bots automatiques",
+    "module_loading": "Chargement correct de tous les modules JavaScript"
+  }
+}
