@@ -46,7 +46,7 @@ window.calculsPacAirEau = {
                     ${calcul.client_nom ? `<div class="item-detail">👤 ${calcul.client_nom}</div>` : ''}
                     ${calcul.surface ? `<div class="item-detail">📏 ${calcul.surface} m²</div>` : ''}
                     ${calcul.puissance_calculee ? `<div class="item-detail">⚡ ${calcul.puissance_calculee} kW</div>` : ''}
-                    <div class="item-detail">📅 ${app.formatDate(calcul.created_at)}</div>
+                    <div class="item-detail">📅 ${window.app.formatDate(calcul.created_at)}</div>
                 </div>
             </div>
         `).join('');
@@ -592,7 +592,7 @@ window.calculsPacAirEau = {
                     calcul.client_nom || '-',
                     calcul.surface + ' m²' || '-',
                     calcul.puissance_calculee + ' kW' || '-',
-                    app.formatDate(calcul.created_at)
+                    window.app.formatDate(calcul.created_at)
                 ]);
                 
                 doc.autoTable({
