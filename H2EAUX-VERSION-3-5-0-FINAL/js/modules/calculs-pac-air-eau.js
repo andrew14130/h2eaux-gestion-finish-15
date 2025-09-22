@@ -5,7 +5,7 @@ window.calculsPacAirEau = {
 
     async load() {
         try {
-            this.data = await app.apiCall('/calculs-pac-air-eau');
+            this.data = await window.app.apiCall('/calculs-pac-air-eau');
             this.render();
         } catch (error) {
             console.error('Error loading calculs PAC Air/Eau:', error);
