@@ -64,7 +64,7 @@ window.documents = {
                     ${doc.client_nom ? `<div class="item-detail">👤 ${doc.client_nom}</div>` : ''}
                     ${doc.chantier ? `<div class="item-detail">🏗️ ${doc.chantier}</div>` : ''}
                     <div class="item-detail">📦 ${doc.taille}</div>
-                    <div class="item-detail">📅 ${app.formatDate(doc.created_at)}</div>
+                    <div class="item-detail">📅 ${window.app.formatDate(doc.created_at)}</div>
                 </div>
             </div>
         `).join('');
@@ -644,7 +644,7 @@ window.documents = {
                 document.type,
                 document.client_nom || '-',
                 document.taille,
-                app.formatDate(document.created_at)
+                window.app.formatDate(document.created_at)
             ]);
             
             doc.autoTable({
