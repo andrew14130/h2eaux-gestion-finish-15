@@ -171,7 +171,7 @@ window.documents = {
         if (files.length > 0 && files[0].type === 'application/pdf') {
             this.processPDFFile(files[0]);
         } else {
-            app.showMessage('Veuillez déposer un fichier PDF uniquement', 'error');
+            window.app.showMessage('Veuillez déposer un fichier PDF uniquement', 'error');
         }
     },
 
@@ -180,13 +180,13 @@ window.documents = {
         if (file && file.type === 'application/pdf') {
             this.processPDFFile(file);
         } else {
-            app.showMessage('Veuillez sélectionner un fichier PDF', 'error');
+            window.app.showMessage('Veuillez sélectionner un fichier PDF', 'error');
         }
     },
 
     async processPDFFile(file) {
         if (file.size > 10 * 1024 * 1024) { // 10MB limit
-            app.showMessage('Le fichier est trop volumineux (max 10MB)', 'error');
+            window.app.showMessage('Le fichier est trop volumineux (max 10MB)', 'error');
             return;
         }
 
@@ -232,13 +232,13 @@ window.documents = {
 
         } catch (error) {
             console.error('Error processing PDF:', error);
-            app.showMessage('Erreur lors du traitement du PDF', 'error');
+            window.app.showMessage('Erreur lors du traitement du PDF', 'error');
         }
     },
 
     async importPDF() {
         if (!this.tempPDFData) {
-            app.showMessage('Aucun PDF sélectionné', 'error');
+            window.app.showMessage('Aucun PDF sélectionné', 'error');
             return;
         }
 
@@ -263,7 +263,7 @@ window.documents = {
                 })
             });
 
-            app.showMessage('PDF importé avec succès', 'success');
+            window.app.showMessage('PDF importé avec succès', 'success');
             document.querySelector('.modal').remove();
             
             // Clear temp data
@@ -274,7 +274,7 @@ window.documents = {
             
         } catch (error) {
             console.error('Error importing PDF:', error);
-            app.showMessage('Erreur lors de l\'import du PDF: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de l\'import du PDF: ' + error.message, 'error');
         }
     },
 
@@ -421,7 +421,7 @@ window.documents = {
         };
 
         if (!formData.nom) {
-            app.showMessage('Le nom du document est obligatoire', 'error');
+            window.app.showMessage('Le nom du document est obligatoire', 'error');
             document.getElementById('docNom').focus();
             return;
         }
@@ -467,23 +467,23 @@ window.documents = {
             // Refresh data
             await this.load();
             
-            app.showMessage('Document enregistré avec succès', 'success');
+            window.app.showMessage('Document enregistré avec succès', 'success');
             document.querySelector('.modal').remove();
         } catch (error) {
             console.error('Error saving document:', error);
-            app.showMessage('Erreur lors de la sauvegarde: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de la sauvegarde: ' + error.message, 'error');
         }
     },
 
     viewDocument(docId) {
         const doc = this.data.find(d => d.id === docId);
         if (!doc) {
-            app.showMessage('Document non trouvé', 'error');
+            window.app.showMessage('Document non trouvé', 'error');
             return;
         }
 
         if (!doc.file_data) {
-            app.showMessage('Aucun fichier associé à ce document', 'error');
+            window.app.showMessage('Aucun fichier associé à ce document', 'error');
             return;
         }
 
@@ -568,7 +568,7 @@ window.documents = {
     downloadDocument(docId) {
         const doc = this.data.find(d => d.id === docId);
         if (!doc || !doc.file_data) {
-            app.showMessage('Impossible de télécharger le document', 'error');
+            window.app.showMessage('Impossible de télécharger le document', 'error');
             return;
         }
 
@@ -580,13 +580,13 @@ window.documents = {
         link.click();
         document.body.removeChild(link);
         
-        app.showMessage('Téléchargement du document démarré', 'success');
+        window.app.showMessage('Téléchargement du document démarré', 'success');
     },
 
     printDocument(docId) {
         const doc = this.data.find(d => d.id === docId);
         if (!doc || !doc.file_data) {
-            app.showMessage('Impossible d\'imprimer le document', 'error');
+            window.app.showMessage('Impossible d\'imprimer le document', 'error');
             return;
         }
 
@@ -625,7 +625,7 @@ window.documents = {
         try {
             // Vérifier que jsPDF est chargé
             if (typeof window.jsPDF === 'undefined') {
-                app.showMessage('Chargement de la bibliothèque PDF...', 'info');
+                window.app.showMessage('Chargement de la bibliothèque PDF...', 'info');
                 await this.loadJsPDF();
             }
 
@@ -656,11 +656,11 @@ window.documents = {
             });
             
             doc.save('documents-h2eaux.pdf');
-            app.showMessage('Export PDF généré avec succès', 'success');
+            window.app.showMessage('Export PDF généré avec succès', 'success');
             
         } catch (error) {
             console.error('Error exporting documents:', error);
-            app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de l\'export PDF: ' + error.message, 'error');
         }
     },
 
@@ -746,10 +746,10 @@ window.documents = {
         try {
             this.data = this.data.filter(d => d.id !== docId);
             this.render();
-            app.showMessage('Document supprimé avec succès', 'success');
+            window.app.showMessage('Document supprimé avec succès', 'success');
         } catch (error) {
             console.error('Error deleting document:', error);
-            app.showMessage('Erreur lors de la suppression: ' + error.message, 'error');
+            window.app.showMessage('Erreur lors de la suppression: ' + error.message, 'error');
         }
     }
 };
