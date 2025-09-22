@@ -1,7 +1,7 @@
 {
-  "version": "3.2.0",
-  "buildDate": "2025-01-21",
-  "buildNumber": 320,
+  "version": "3.3.0",
+  "buildDate": "2025-01-22",
+  "buildNumber": 330,
   "environment": "production",
   "minimumVersion": "2.0.0",
   "criticalUpdate": false,
