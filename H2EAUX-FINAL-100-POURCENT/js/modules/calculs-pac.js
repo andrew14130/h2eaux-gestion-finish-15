@@ -10,10 +10,11 @@ window.calculsPac = {
     },
 
     showPacAirEau() {
-        window.app.showModule('calculs-pac-air-eau');
+        app.showModule('calculs-pac-air-eau');
     },
 
     showPacAirAir() {
-        window.app.showModule('calculs-pac-air-air');
+        app.showModule('calculs-pac-air-air');
     }
+
 };
