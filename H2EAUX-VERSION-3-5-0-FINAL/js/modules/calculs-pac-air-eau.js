@@ -5,7 +5,7 @@ window.calculsPacAirEau = {
 
     async load() {
         try {
-            this.data = await window.app.apiCall('/calculs-pac-air-eau');
+            this.data = await window.window.app.apiCall('/calculs-pac-air-eau');
             this.render();
         } catch (error) {
             console.error('Error loading calculs PAC Air/Eau:', error);
@@ -68,7 +68,7 @@ window.calculsPacAirEau = {
         // Load clients for dropdown
         let clientsOptions = '<option value="">Sélectionner un client</option>';
         try {
-            const clients = await app.apiCall('/clients');
+            const clients = await window.app.apiCall('/clients');
             clientsOptions += clients.map(client => 
                 `<option value="${client.nom} ${client.prenom || ''}" ${calcul?.client_nom === `${client.nom} ${client.prenom || ''}` ? 'selected' : ''}>
                     ${client.nom} ${client.prenom || ''}
@@ -471,13 +471,13 @@ window.calculsPacAirEau = {
 
         try {
             if (this.currentEdit) {
-                await app.apiCall(`/calculs-pac-air-eau/${this.currentEdit.id}`, {
+                await window.app.apiCall(`/calculs-pac-air-eau/${this.currentEdit.id}`, {
                     method: 'PUT',
                     body: JSON.stringify(formData)
                 });
                 app.showMessage('Calcul PAC Air/Eau modifié avec succès', 'success');
             } else {
-                await app.apiCall('/calculs-pac-air-eau', {
+                await window.app.apiCall('/calculs-pac-air-eau', {
                     method: 'POST',
                     body: JSON.stringify(formData)
                 });
@@ -549,7 +549,7 @@ window.calculsPacAirEau = {
         }
 
         try {
-            await app.apiCall(`/calculs-pac-air-eau/${calculId}`, { method: 'DELETE' });
+            await window.app.apiCall(`/calculs-pac-air-eau/${calculId}`, { method: 'DELETE' });
             app.showMessage('Calcul PAC Air/Eau supprimé avec succès', 'success');
             await this.load();
         } catch (error) {
