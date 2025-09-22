@@ -4,7 +4,7 @@ window.documents = {
     
     async load() {
         try {
-            this.data = await app.apiCall('/documents');
+            this.data = await window.app.apiCall('/documents');
             this.render();
         } catch (error) {
             console.error('Error loading documents:', error);
@@ -254,7 +254,7 @@ window.documents = {
         };
 
         try {
-            await app.apiCall('/documents', {
+            await window.app.apiCall('/documents', {
                 method: 'POST',
                 body: JSON.stringify({
                     ...docData,
@@ -291,14 +291,14 @@ window.documents = {
         let chantiersOptions = '<option value="">Sélectionner un chantier</option>';
         
         try {
-            const clients = await app.apiCall('/clients');
+            const clients = await window.app.apiCall('/clients');
             clientsOptions += clients.map(client => 
                 `<option value="${client.nom} ${client.prenom || ''}" ${doc?.client_nom === `${client.nom} ${client.prenom || ''}` ? 'selected' : ''}>
                     ${client.nom} ${client.prenom || ''}
                 </option>`
             ).join('');
             
-            const chantiers = await app.apiCall('/chantiers');
+            const chantiers = await window.app.apiCall('/chantiers');
             chantiersOptions += chantiers.map(chantier => 
                 `<option value="${chantier.nom}" ${doc?.chantier === chantier.nom ? 'selected' : ''}>
                     ${chantier.nom}
@@ -459,7 +459,7 @@ window.documents = {
             };
             
             // Save to backend local
-            await app.apiCall('/documents', {
+            await window.app.apiCall('/documents', {
                 method: 'POST',
                 body: JSON.stringify(newDoc)
             });
