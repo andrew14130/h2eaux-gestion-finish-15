@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H2EAUX GESTION</title>
+    <meta name="description" content="Application de gestion pour professionnels H2EAUX">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#007bff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="H2EAUX GESTION">
+    
+    <!-- Icons -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+    <link rel="apple-touch-icon" href="assets/icon-152.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/modules.css">
+    <link rel="stylesheet" href="css/fiches-chantier.css">
+    <link rel="stylesheet" href="css/pac-advanced.css">
+    
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" defer></script>
+    
+    <!-- Vérification du chargement jsPDF -->
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof window.jsPDF === 'undefined') {
+                console.warn('jsPDF not loaded, will load dynamically when needed');
+            } else {
+                console.log('jsPDF loaded successfully');
+            }
+        });
+    </script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <img src="assets/logo.png" alt="H2EAUX GESTION" width="80">
+            </div>
+            <div class="loading-text">H2EAUX GESTION</div>
+            <div class="loading-subtitle">Application Tablette Professionnelle</div>
+            <div class="loading-spinner"></div>
+            <div class="loading-progress">Chargement en cours...</div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen" style="display: none;">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="assets/logo.png" alt="H2EAUX GESTION" class="login-logo">
+                <h1 class="login-title">H2EAUX GESTION</h1>
+                <p class="login-subtitle">Application Tablette Professionnelle</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" id="loginBtn" class="login-btn">
+                    <span class="login-btn-text">Se connecter</span>
+                    <span class="login-btn-loading" style="display: none;">Connexion...</span>
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <div class="version-info">Version 3.4.0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app" style="display: none;">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="app-logo">
+                    <img src="assets/logo.png" alt="H2EAUX GESTION" width="32">
+                    <div class="app-info">
+                        <h1 class="app-title">H2EAUX GESTION</h1>
+                        <p class="app-subtitle">Application Tablette Professionnelle</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-name" id="currentUserName">admin</span>
+                    <span class="user-role" id="currentUserRole">Administrateur</span>
+                </div>
+                <button class="logout-btn" onclick="app.logout()">Déconnexion</button>
+                <div class="connection-status" id="connectionStatus">
+                    <span class="status-indicator online"></span>
+                    <span class="status-text">Connexion réussie !</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <div class="nav-item active" data-module="dashboard">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Dashboard</span>
+            </div>
+            
+            <div class="nav-item" data-module="clients">
+                <span class="nav-icon">👥</span>
+                <span class="nav-label">Clients</span>
+            </div>
+            
+            <div class="nav-item" data-module="chantiers">
+                <span class="nav-icon">🏗️</span>
+                <span class="nav-label">Chantiers</span>
+            </div>
+            
+            <div class="nav-dropdown">
+                <div class="nav-dropdown-toggle" data-module="calculs-pac">
+                    <span class="nav-icon">🌡️</span>
+                    <span class="nav-label">Calculs PAC</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="nav-dropdown-menu">
+                    <div class="nav-dropdown-item" data-module="calculs-pac">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-label">Sélection Type</span>
+                    </div>
+                    <div class="nav-dropdown-item" data-module="calculs-pac-air-eau">
+                        <span class="nav-icon">🌡️</span>
+                        <span class="nav-label">PAC Air/Eau</span>
+                    </div>
+                    <div class="nav-dropdown-item" data-module="calculs-pac-air-air">
+                        <span class="nav-icon">❄️</span>
+                        <span class="nav-label">PAC Air/Air</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-item" data-module="documents">
+                <span class="nav-icon">📄</span>
+                <span class="nav-label">Documents</span>
+            </div>
+            
+            <div class="nav-item" data-module="fiches-chantier">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">Fiches Chantier</span>
+            </div>
+            
+            <div class="nav-item" data-module="calendrier">
+                <span class="nav-icon">📅</span>
+                <span class="nav-label">Calendrier</span>
+            </div>
+            
+            <div class="nav-item" data-module="meg-integration">
+                <span class="nav-icon">🔗</span>
+                <span class="nav-label">MEG Integration</span>
+            </div>
+            
+            <div class="nav-item" data-module="chat">
+                <span class="nav-icon">💬</span>
+                <span class="nav-label">Chat Équipe</span>
+            </div>
+            
+            <div class="nav-item" data-module="parametres">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">Paramètres</span>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- DASHBOARD MODULE -->
+            <div id="dashboardModule" class="module active">
+                <div class="module-header">
+                    <h2>📊 Dashboard</h2>
+                    <div class="module-subtitle">Vue d'ensemble de votre activité</div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-icon">👥</div>
+                        <div class="card-content">
+                            <div class="card-number" id="dashClientsCount">2</div>
+                            <div class="card-label">Clients</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-icon">🏗️</div>
+                        <div class="card-content">
+                            <div class="card-number" id="dashChantiersCount">0</div>
+                            <div class="card-label">Chantiers</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-icon">🌡️</div>
+                        <div class="card-content">
+                            <div class="card-number" id="dashCalculsCount">0</div>
+                            <div class="card-label">Calculs PAC</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-icon">💰</div>
+                        <div class="card-content">
+                            <div class="card-number" id="dashRevenue">0,00 €</div>
+                            <div class="card-label">Chiffre d'affaires</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quick-actions">
+                    <h3>Actions Rapides</h3>
+                    <div class="actions-grid">
+                        <div class="action-card" onclick="window.app.showModule('clients')">
+                            <div class="action-icon">👥</div>
+                            <div class="action-content">
+                                <div class="action-title">Nouveau Client</div>
+                                <div class="action-desc">Ajouter un client à votre base</div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-card" onclick="window.app.showModule('chantiers')">
+                            <div class="action-icon">🏗️</div>
+                            <div class="action-content">
+                                <div class="action-title">Nouveau Chantier</div>
+                                <div class="action-desc">Créer un nouveau projet</div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-card" onclick="window.app.showModule('calculs-pac')">
+                            <div class="action-icon">🌡️</div>
+                            <div class="action-content">
+                                <div class="action-title">Calcul PAC</div>
+                                <div class="action-desc">Dimensionner une installation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CALCULS PAC MODULE -->
+            <div id="calculs-pacModule" class="module">
+                <div class="module-header">
+                    <h2>🌡️ Calculs PAC</h2>
+                    <div class="module-subtitle">Choisissez le type de pompe à chaleur à calculer</div>
+                </div>
+                
+                <div class="pac-selection-container">
+                    <div class="pac-option-card">
+                        <div class="pac-option-icon">🌡️</div>
+                        <div class="pac-option-content">
+                            <h3>PAC Air/Eau</h3>
+                            <p>Calculs pour pompes à chaleur air/eau</p>
+                            <ul>
+                                <li>• Radiateurs existants (fonte, acier, alu)</li>
+                                <li>• Températures départ/retour</li>
+                                <li>• Plancher chauffant</li>
+                                <li>• COP optimisé</li>
+                            </ul>
+                            <button class="btn-primary" onclick="window.app.showModule('calculs-pac-air-eau')">Accéder aux calculs Air/Eau</button>
+                        </div>
+                    </div>
+
+                    <div class="pac-option-card">
+                        <div class="pac-option-icon">❄️</div>
+                        <div class="pac-option-content">
+                            <h3>PAC Air/Air</h3>
+                            <p>Calculs pour pompes à chaleur air/air</p>
+                            <ul>
+                                <li>• Menuiseries (simple à triple vitrage)</li>
+                                <li>• Isolation RT2012/RE2020</li>
+                                <li>• Mono/Multi-split/Gainable</li>
+                                <li>• SCOP/SEER automatiques</li>
+                            </ul>
+                            <button class="btn-primary" onclick="window.app.showModule('calculs-pac-air-air')">Accéder aux calculs Air/Air</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CALCULS PAC AIR/EAU MODULE -->
+            <div id="calculs-pac-air-eauModule" class="module">
+                <div class="module-header">
+                    <h2>🌡️ PAC Air/Eau</h2>
+                    <div class="module-actions">
+                        <button class="btn-secondary" onclick="window.app.showModule('calculs-pac')">← Retour PAC</button>
+                        <button class="btn-primary" onclick="calculsPacAirEau.showAddModal()">+ Nouveau Calcul</button>
+                        <button class="btn-secondary" onclick="calculsPacAirEau.exportList()">📄 Export</button>
+                    </div>
+                </div>
+                
+                <div class="module-filters">
+                    <input type="text" id="calculAirEauSearch" placeholder="Rechercher un calcul Air/Eau..." onkeyup="calculsPacAirEau.filter()">
+                    <select id="calculAirEauFilter" onchange="calculsPacAirEau.filter()">
+                        <option value="all">Tous les calculs</option>
+                        <option value="recent">Récents</option>
+                        <option value="haute_temp">Haute température</option>
+                        <option value="basse_temp">Basse température</option>
+                    </select>
+                </div>
+                
+                <div id="calculsPacAirEauList" class="items-list">
+                    <!-- Contenu généré par calculsPacAirEau.render() -->
+                </div>
+            </div>
+
+            <!-- CALCULS PAC AIR/AIR MODULE -->
+            <div id="calculs-pac-air-airModule" class="module">
+                <div class="module-header">
+                    <h2>❄️ PAC Air/Air</h2>
+                    <div class="module-actions">
+                        <button class="btn-secondary" onclick="window.app.showModule('calculs-pac')">← Retour PAC</button>
+                        <button class="btn-primary" onclick="calculsPacAirAir.showAddModal()">+ Nouveau Calcul</button>
+                        <button class="btn-secondary" onclick="calculsPacAirAir.exportList()">📄 Export</button>
+                    </div>
+                </div>
+                
+                <div class="module-filters">
+                    <input type="text" id="calculAirAirSearch" placeholder="Rechercher un calcul Air/Air..." onkeyup="calculsPacAirAir.filter()">
+                    <select id="calculAirAirFilter" onchange="calculsPacAirAir.filter()">
+                        <option value="all">Tous les calculs</option>
+                        <option value="recent">Récents</option>
+                        <option value="mono_split">Mono-split</option>
+                        <option value="multi_split">Multi-split</option>
+                        <option value="gainable">Gainable</option>
+                    </select>
+                </div>
+                
+                <div id="calculsPacAirAirList" class="items-list">
+                    <!-- Contenu généré par calculsPacAirAir.render() -->
+                </div>
+            </div>
+
+            <!-- DOCUMENTS MODULE -->
+            <div id="documentsModule" class="module">
+                <div class="module-header">
+                    <h2>📄 Gestion Documents</h2>
+                    <div class="module-actions">
+                        <button class="btn-primary" onclick="documents.showAddModal()">+ Nouveau Document</button>
+                        <button class="btn-success" onclick="documents.showImportPDFModal()">📥 Import PDF</button>
+                        <button class="btn-secondary" onclick="documents.exportList()">📄 Export Liste</button>
+                    </div>
+                </div>
+                
+                <div class="module-filters">
+                    <input type="text" id="docSearch" placeholder="Rechercher un document..." onkeyup="documents.filter()">
+                    <select id="docFilter" onchange="documents.filter()">
+                        <option value="all">Tous les types</option>
+                        <option value="facture">Factures</option>
+                        <option value="devis">Devis</option>
+                        <option value="contrat">Contrats</option>
+                        <option value="rapport">Rapports</option>
+                    </select>
+                </div>
+                
+                <div id="documentsList" class="items-list">
+                    <!-- Contenu généré par documents.render() -->
+                </div>
+            </div>
+
+            <!-- Autres modules (clients, chantiers, etc.) -->
+            <!-- ... (je vais les inclure dans les prochains fichiers) ... -->
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/backend-local.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/offline.js"></script>
+    <script src="js/update-manager.js"></script>
+    
+    <!-- Modules -->
+    <script src="js/modules/clients.js"></script>
+    <script src="js/modules/chantiers.js"></script>
+    <script src="js/modules/calculs-pac.js"></script>
+    <script src="js/modules/calculs-pac-air-eau.js"></script>
+    <script src="js/modules/calculs-pac-air-air.js"></script>
+    <script src="js/modules/documents.js"></script>
+    <script src="js/modules/fiches-chantier.js"></script>
+    <script src="js/modules/calendrier.js"></script>
+    <script src="js/modules/meg-integration.js"></script>
+    <script src="js/modules/chat.js"></script>
+    <script src="js/modules/settings.js"></script>
+    <script src="js/modules/pdf-export.js"></script>
+    <script src="js/modules/calculs-pac-advanced.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((error) => {
+                        console.log('SW registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
